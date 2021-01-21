@@ -3,10 +3,7 @@
 namespace NFSe;
 
 use DateTime;
-use NFSe\Request\CreateBankSlipRequest;
-use NFSe\Request\ConsultBankSlipRequest;
 use NFSe\Entity\Issuer;
-use NFSe\Entity\BankSlip;
 use NFSe\Entity\Invoice;
 use NFSe\Request\ConsultationRequest;
 

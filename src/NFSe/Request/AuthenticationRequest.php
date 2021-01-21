@@ -37,12 +37,11 @@ class AuthenticationRequest extends AbstractRequest
      *      password => Issuer's password
      *      client_id => Issuer's client id
      *      client_secret => Issuer's client secret
-     *
      * @return null
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
-    public function execute($param = null)
+    public function execute(array $param = [])
     {
         if (empty($this->getEndpoint())) {
             throw new NFSeRequestException('Endpoint is empty!', 422);
@@ -67,9 +66,9 @@ class AuthenticationRequest extends AbstractRequest
     }
 
     /**
-     * @param $json
-     *
-     * @return Authentication
+     * Unserialize and stores auth token
+     * @param string $json
+     * @return AuthenticationRequest
      */
     protected function unserialize($json)
     {

@@ -39,27 +39,27 @@ class ConsultationRequest extends AbstractRequest
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
-    public function execute($param = null, $type = 'GET')
+    public function execute(array $param = [], $type = 'GET')
     {
         if (empty($this->getEndpoint())) {
             throw new NFSeRequestException('Endpoint is empty!', 422);
         }
-        $url = $this->environment->getApiUrl() . $this->getEndpoint();
+        $url = $this->getEnvironment()->getApiUrl() . $this->getEndpoint();
         if (!in_array(strtoupper($type), ['POST', 'PUT', 'DELETE', 'GET'])) {
             throw new \InvalidArgumentException('Invalid request type!');
         }
+        $content = (empty($param)) ? null : http_build_query($param);
 
-        return $this->sendRequest($type, $url, http_build_query($param));
+        return $this->sendRequest($type, $url, $content);
     }
 
     /**
-     * @param $json
-     *
-     * @return Authentication
+     * @param \JsonSerializable $json
+     * @return mixed
      */
     protected function unserialize($json)
     {
-        return json_decode($json);
+        return json_decode($json, true);
     }
 
     /**
@@ -78,14 +78,18 @@ class ConsultationRequest extends AbstractRequest
      *      "registrosPorPagina" => 0
      * ]
      * @throws \NFSe\Exception\NFSeRequestException
+     * @throws \InvalidArgumentException
      * @throws \RuntimeException
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#operation/notaFiscalPorIntervaloDataUsingGET
      */
     public function dateInterval(\DateTime $startDate = null, \DateTime $endDate = null)
     {
+        if ($endDate < $startDate) {
+            throw new \InvalidArgumentException('Invalid date interval');
+        }
         $this->setEndpoint("consultas/notas/data/{$startDate->format('Y-m-d')}/{$endDate->format('Y-m-d')}");
 
-        return $this->unserialize($this->execute());
+        return $this->execute();
     }
 
     /**
@@ -121,7 +125,7 @@ class ConsultationRequest extends AbstractRequest
         }
         $this->setEndpoint("consultas/notas/aedf/{$aedf}/numero/{$startNumber}/{$endNumber}");
 
-        return $this->unserialize($this->execute());
+        return $this->execute();
     }
 
     /**
@@ -163,6 +167,6 @@ class ConsultationRequest extends AbstractRequest
         }
         $this->setEndpoint("consultas/notas/data/cmc");
 
-        return new \DateTime($this->unserialize($this->execute()));
+        return new \DateTime($this->execute());
     }
 }

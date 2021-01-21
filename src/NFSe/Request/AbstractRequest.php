@@ -44,11 +44,10 @@ abstract class AbstractRequest
     }
 
     /**
-     * @param mixed $param
-     *
+     * @param array $param
      * @return mixed
      */
-    public abstract function execute($param = null);
+    public abstract function execute(array $param = []);
 
     /**
      * @param string $method    GET, POST, PUT, DELETE
@@ -149,8 +148,9 @@ abstract class AbstractRequest
     }
 
     /**
+     * @abstract
      * @access protected
-     * @param $json
+     * @param string $json
      * @return mixed
      */
     protected abstract function unserialize($json);
