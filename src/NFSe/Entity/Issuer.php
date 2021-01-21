@@ -161,7 +161,7 @@ class Issuer extends AbstractEntity
 
     /**
      * Return Authentication request
-     * @return AuthenticationRequest
+     * @return null|AuthenticationRequest
      */
     public function getAuthentication()
     {

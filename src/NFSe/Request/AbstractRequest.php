@@ -4,7 +4,6 @@ namespace NFSe\Request;
 
 use NFSe\Environment;
 use NFSe\Entity\Issuer;
-use NFSe\Entity\NFSeError;
 use NFSe\Exception\NFSeRequestException;
 use NFSe\Exception\EntityException;
 
@@ -61,13 +60,16 @@ abstract class AbstractRequest
      */
     protected function sendRequest($method, $url, $content = null, array $extraHeaders = [])
     {
-        $headers = array_merge($extraHeaders, [
-            'Accept' => 'application/json',
-            'Accept-Encoding' => 'gzip',
-            'User-Agent' => 'NFSe/1.0 PHP API',
-            'Authorization' => 'Bearer '. $this->getIssuer()->getAuthentication()->getAccessToken(),
-            'RequestId: ' . uniqid()
-        ]);
+        $headers = array_merge([
+            'Accept' => 'Accept: */*',
+            'Accept-Encoding' => 'Accept-Encoding: gzip, deflate, br',
+            'User-Agent' => 'User-Agent: NFSe/1.0 PHP API',
+            'RequestId' => 'RequestId: ' . md5(uniqid())
+        ], $extraHeaders);
+
+        if (empty($headers['Authorization'])) {
+            $headers['Authorization'] = 'Authorization: Bearer '. $this->getIssuer()->getAuthentication()->getAccessToken();
+        }
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
@@ -82,10 +84,10 @@ abstract class AbstractRequest
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         }
         if ($content !== null) {
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($content));
-            $headers[] = 'Content-Type: application/json';
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $content);
+            $headers['Content-Type'] = 'Content-Type: application/x-www-form-urlencoded';
         } else {
-            $headers[] = 'Content-Length: 0';
+            $headers['Content-Length'] = 'Content-Length: 0';
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

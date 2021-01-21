@@ -34,19 +34,22 @@ class ConsultationRequest extends AbstractRequest
      *      password => Issuer's password
      *      client_id => Issuer's client id
      *      client_secret => Issuer's client secret
-     *
+     * @param string $type  Request type, default => GET. Allowed values POST, PUT, DELETE, GET
      * @return null
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
-    public function execute($param = null)
+    public function execute($param = null, $type = 'GET')
     {
         if (empty($this->getEndpoint())) {
             throw new NFSeRequestException('Endpoint is empty!', 422);
         }
         $url = $this->environment->getApiUrl() . $this->getEndpoint();
+        if (!in_array(strtoupper($type), ['POST', 'PUT', 'DELETE', 'GET'])) {
+            throw new \InvalidArgumentException('Invalid request type!');
+        }
 
-        return $this->sendRequest('GET', $url, $param);
+        return $this->sendRequest($type, $url, http_build_query($param));
     }
 
     /**
@@ -145,7 +148,7 @@ class ConsultationRequest extends AbstractRequest
     }
 
     /**
-     * Performs consultation last date of invoice emission by provider cmc
+     * Performs consultation of last invoice date emission by provider's cmc
      *
      * @param int $cmc  Provider cmc number
      * @return \DateTime

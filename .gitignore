@@ -3,4 +3,4 @@ vendor
 nbproject
 .idea
 .history
-tests/credentials.php
+samples/credentials.php

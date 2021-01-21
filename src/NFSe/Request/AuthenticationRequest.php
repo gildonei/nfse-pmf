@@ -60,10 +60,10 @@ class AuthenticationRequest extends AbstractRequest
         }
 
         $headers = [
-            'Authorization' => 'Basic ' . base64_encode($this->getIssuer()->getClientId() . ':' . $this->getIssuer()->getClientSecret())
+            'Authorization' => 'Authorization: Basic ' . base64_encode($this->getIssuer()->getClientId() . ':' . $this->getIssuer()->getClientSecret())
         ];
 
-        return $this->sendRequest('POST', $url, $param, $headers);
+        return $this->sendRequest('POST', $url, http_build_query($param), $headers);
     }
 
     /**
