@@ -3,7 +3,7 @@
     "description": "PHP Api para emissão de Nota Fiscal de Serviço Eletrônica (NFS-e)",
     "homepage": "https://nfps-e-hml.pmf.sc.gov.br/",
     "type": "library",
-    "license": "GNU",
+    "license": "MIT",
     "version": "1.0.0",
     "minimum-stability": "dev",
     "keywords": ["php", "pmf", "florianópolis", "nfse", "prefeitura municipal de florianopolis"],
