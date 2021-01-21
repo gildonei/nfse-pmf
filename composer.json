@@ -1,0 +1,25 @@
+{
+    "name": "gildonei/nfse-pmf",
+    "description": "PHP Api para emissão de Nota Fiscal de Serviço Eletrônica (NFS-e)",
+    "homepage": "https://nfps-e-hml.pmf.sc.gov.br/",
+    "type": "library",
+    "license": "GNU",
+    "version": "1.0.0",
+    "minimum-stability": "dev",
+    "keywords": ["php", "pmf", "florianópolis", "nfse", "prefeitura municipal de florianopolis"],
+    "authors": [
+        {
+            "name": "Gildonei Mendes Anacleto Junior",
+            "homepage": "https://www.sitecomarte.com.br",
+            "email": "junior@sitecomarte.com.br"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "autoload": {
+        "psr-0": {
+            "NFSe": "src"
+        }
+    }
+}
