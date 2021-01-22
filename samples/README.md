@@ -1,9 +1,9 @@
 # Instructions for using samples
 
-EX: Assuming you use WAMP in Windows x64, your default localhost dir ir C:\wamp64\www.
+EX: Assuming you use WAMP in Windows x64, your default localhost dir is C:\wamp64\www.
 1. First step you can create a dir called `nfse` in `C:\wamp64\www`
-2. Using windows `prompt commander` you will run `cd C:\wamp64\www\nfse`
-3. Inside `nfse` dir will install the package using `composer require gildonei/nfse-pmf`
+2. Using windows `prompt` you will run `cd C:\wamp64\www\nfse`
+3. Inside `nfse` dir, you must install NFSe the package using `composer require gildonei/nfse-pmf`
 4. Copy all sample files inside `/vendor/gildonei/NFSe/samples/` to `C:\wamp64\www\nfse` dir
 5. Create a new file called `credentials.php` in `C:\wamp64\www\nfse`
 6. Add an array with your credentials
