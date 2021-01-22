@@ -426,7 +426,7 @@ class Invoice extends AbstractEntity
      */
     public function setDay($value)
     {
-        if (!preg_match('/[^0-9]{1,2}', $value)) {
+        if (!preg_match('/^[0-9]{1,2}/', $value)) {
             throw new \InvalidArgumentException("Month invalid!");
         }
         if ($value < 1 || $value > 31) {
@@ -454,7 +454,7 @@ class Invoice extends AbstractEntity
      */
     public function setMonth($value)
     {
-        if (!preg_match('/[^0-9]{1,2}', $value)) {
+        if (!preg_match('/^[0-9]{1,2}/', $value)) {
             throw new \InvalidArgumentException("Month invalid!");
         }
         if ($value < 1 || $value > 12) {
@@ -483,7 +483,7 @@ class Invoice extends AbstractEntity
     public function setYear($value)
     {
         $year = date('Y');
-        if (!preg_match('/[^0-9]{4}', $value)) {
+        if (!preg_match('/^[0-9]{4}/', $value)) {
             throw new \InvalidArgumentException("Year invalid!");
         }
         if ($value < 1900 || $value > $year) {
@@ -511,8 +511,8 @@ class Invoice extends AbstractEntity
      */
     public function setStatus($value)
     {
-        if (!is_bool($value)) {
-            throw new \InvalidArgumentException("Status must be a boolean!");
+        if ($value !== 0 & $value !== 1) {
+            throw new \InvalidArgumentException("Status must be a 0 / 1!");
         }
         $this->status = $value;
 
@@ -680,9 +680,7 @@ class Invoice extends AbstractEntity
      */
     public function hydrate(array $data = [])
     {
-        if (empty($data)) {
-            throw new \InvalidArgumentException('Data is empty!');
-        }
+        $this->validateRequiredFields($data);
 
         $invoice = new Invoice();
         $provider = $invoice->getProvider()
@@ -716,5 +714,64 @@ class Invoice extends AbstractEntity
             ->setSimples($data['flSimpl']);
 
         return $invoice;
+    }
+
+    /**
+     * Validate if all key
+     */
+    private function validateRequiredFields(array $data = [])
+    {
+        if (empty($data)) {
+            throw new \InvalidArgumentException('Data is empty!');
+        }
+        $error = [];
+        $keys = array_keys($data);
+        $requiredFields = $this->getRequiredFields();
+        foreach ($keys as $key) {
+            if (!in_array($key, $requiredFields)) {
+                $error[] = $key;
+            }
+        }
+        if (!empty($error)) {
+            throw new \InvalidArgumentException('The field(s) ' . implode(', ', $error) . ' not set in Invoice data!');
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns an array with all required fields in an Invoice array data
+     * @access private
+     * @return array
+     */
+    private function getRequiredFields()
+    {
+        return [
+            'id',
+            'aedf',
+            'identificacaoPrestador',
+            'cmcPrestador',
+            'nomePrestador',
+            'identificacaoTomador',
+            'nomeTomador',
+            'emailTomador',
+            'dataEmissao',
+            'dataProcessamento',
+            'dataCancelamento',
+            'valorNota',
+            'valorIss',
+            'cfps',
+            'motivoCancelamento',
+            'numero',
+            'dia',
+            'mes',
+            'ano',
+            'status',
+            'cdVerificacao',
+            'identificacao',
+            'flDecl',
+            'competenciaDecl',
+            'flSimpl'
+        ];
     }
 }
