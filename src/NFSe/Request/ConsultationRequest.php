@@ -35,7 +35,7 @@ class ConsultationRequest extends AbstractRequest
      *      client_id => Issuer's client id
      *      client_secret => Issuer's client secret
      * @param string $type  Request type, default => GET. Allowed values POST, PUT, DELETE, GET
-     * @return null
+     * @return mixed
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
@@ -95,7 +95,7 @@ class ConsultationRequest extends AbstractRequest
     /**
      * Performs consultation of invoices by AEDF and invoice number range
      *
-     * @param int $aedf AEDF (Autorização Emissão Documento Fiscal)
+     * @param string|int $aedf AEDF (Autorização Emissão Documento Fiscal)
      * @param int $startNumber  Invoice number
      * @param int $endNumber    Invoice number
      * @return array
@@ -147,8 +147,9 @@ class ConsultationRequest extends AbstractRequest
             throw new \InvalidArgumentException('Provider CMC is empty');
         }
         $this->setEndpoint("consultas/notas/codigo/{$code}/{$cmc}");
+        $invoice = new Invoice();
 
-        return new Provider($this->execute());
+        return $invoice->hydrate($this->execute());
     }
 
     /**

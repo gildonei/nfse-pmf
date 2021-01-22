@@ -646,40 +646,42 @@ class Invoice extends AbstractEntity
 
     /**
      * Sets all invoice properties
-     * @param \JsonSerializable $json
-     * {
-     *      "aedf": "string",
-     *      "ano": 0,
-     *      "cdVerificacao": "string",
-     *      "cfps": "string",
-     *      "cmcPrestador": "string",
-     *      "competenciaDecl": "string",
-     *      "dataCancelamento": "2019-08-24T14:15:22Z",
-     *      "dataEmissao": "2019-08-24T14:15:22Z",
-     *      "dataProcessamento": "2019-08-24T14:15:22Z",
-     *      "dia": 0,
-     *      "emailTomador": "string",
-     *      "id": 0,
-     *      "identificacao": "string",
-     *      "identificacaoPrestador": "string",
-     *      "identificacaoTomador": "string",
-     *      "flDecl": "string",
-     *      "flSimpl": "string",
-     *      "mes": 0,
-     *      "motivoCancelamento": "string",
-     *      "nomePrestador": "string",
-     *      "nomeTomador": "string",
-     *      "numero": 0,
-     *      "status": 0,
-     *      "valorIss": 0,
-     *      "valorNota": 0
-     * }
+     * @param array $data
+     * [
+     *      "aedf" => "string",
+     *      "ano" => 0,
+     *      "cdVerificacao" => "string",
+     *      "cfps" => "string",
+     *      "cmcPrestador" => "string",
+     *      "competenciaDecl" => "string",
+     *      "dataCancelamento" => "2019-08-24T14:15:22Z",
+     *      "dataEmissao" => "2019-08-24T14:15:22Z",
+     *      "dataProcessamento" => "2019-08-24T14:15:22Z",
+     *      "dia" => 0,
+     *      "emailTomador" => "string",
+     *      "id" => 0,
+     *      "identificacao" => "string",
+     *      "identificacaoPrestador" => "string",
+     *      "identificacaoTomador" => "string",
+     *      "flDecl" => "string",
+     *      "flSimpl" => "string",
+     *      "mes" => 0,
+     *      "motivoCancelamento" => "string",
+     *      "nomePrestador" => "string",
+     *      "nomeTomador" => "string",
+     *      "numero" => 0,
+     *      "status" => 0,
+     *      "valorIss" => 0,
+     *      "valorNota" => 0
+     * ]
      * @return Invoice
      * @throws \InvalidArgumentException
      */
-    public function hydrate(\JsonSerializable $json)
+    public function hydrate(array $data = [])
     {
-        $data = json_decode($json);
+        if (empty($data)) {
+            throw new \InvalidArgumentException('Data is empty!');
+        }
 
         $invoice = new Invoice();
         $provider = $invoice->getProvider()
