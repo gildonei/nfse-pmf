@@ -35,11 +35,8 @@ class NFSeApi
      */
     public function __construct(Issuer $issuer, Environment $environment = null)
     {
-        if (empty($environment)) {
-            $this->setEnvironment(Environment::production());
-        }
-
         $this->setIssuer($issuer);
+        $this->setEnvironment((empty($environment)) ? Environment::production() : $environment);
     }
 
     /**
