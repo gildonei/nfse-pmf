@@ -2,6 +2,7 @@
 
 namespace NFSe\Entity;
 
+use DateTime;
 use NFSe\Entity\AbstractEntity;
 use NFSe\Entity\Provider;
 use NFSe\Entity\Taker;
@@ -696,9 +697,9 @@ class Invoice extends AbstractEntity
             ->setAedf($data['aedf'])
             ->setProvider($provider)
             ->setTaker($taker)
-            ->setEmitted($data['dataEmissao'])
-            ->setProcessed($data['dataProcessamento'])
-            ->setCancelled($data['dataCancelamento'])
+            ->setEmitted(new \DateTime($data['dataEmissao']))
+            ->setProcessed(new \DateTime($data['dataProcessamento']))
+            ->setCancelled((empty($data['dataCancelamento'])) ? null : new \DateTime($data['dataCancelamento']))
             ->setValue($data['valorNota'])
             ->setIss($data['valorIss'])
             ->setCfps($data['cfps'])
@@ -711,7 +712,7 @@ class Invoice extends AbstractEntity
             ->setVerificationCode($data['cdVerificacao'])
             ->setIdentification($data['identificacao'])
             ->setDecl($data['flDecl'])
-            ->setDeclDate($data['competenciaDecl'])
+            ->setDeclDate((empty($data['competenciaDecl'])) ? null : new \DateTime($data['competenciaDecl']))
             ->setSimples($data['flSimpl']);
 
         return $invoice;
