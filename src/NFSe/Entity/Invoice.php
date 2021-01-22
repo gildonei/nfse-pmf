@@ -376,7 +376,7 @@ class Invoice extends AbstractEntity
      */
     public function setValue($value)
     {
-        if (!filter_var($value, FILTER_VALIDATE_FLOAT)) {
+        if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
             throw new \InvalidArgumentException('Invoice Value must be a float number!');
         }
         $this->value = $value;
@@ -401,7 +401,7 @@ class Invoice extends AbstractEntity
      */
     public function setIss($value)
     {
-        if (!filter_var($value, FILTER_VALIDATE_FLOAT)) {
+        if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
             throw new \InvalidArgumentException('Invoice ISS must be a float number!');
         }
         $this->iss = $value;
