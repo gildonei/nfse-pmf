@@ -60,7 +60,7 @@ class Taker extends AbstractEntity
         if (empty($email)) {
             throw new \InvalidArgumentException('Email is empty!');
         }
-        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException('Invalid email address!');
         }
         $this->email = $email;
