@@ -35,11 +35,12 @@ class ConsultationRequest extends AbstractRequest
      *      client_id => Issuer's client id
      *      client_secret => Issuer's client secret
      * @param string $type  Request type, default => GET. Allowed values POST, PUT, DELETE, GET
+     * @param array $headers  Extra headers
      * @return mixed
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
-    public function execute(array $param = [], $type = 'GET')
+    public function execute(array $param = [], $type = 'GET', array $headers = [])
     {
         if (empty($this->getEndpoint())) {
             throw new NFSeRequestException('Endpoint is empty!', 422);
@@ -48,9 +49,9 @@ class ConsultationRequest extends AbstractRequest
         if (!in_array(strtoupper($type), ['POST', 'PUT', 'DELETE', 'GET'])) {
             throw new \InvalidArgumentException('Invalid request type!');
         }
-        $content = (empty($param)) ? null : http_build_query($param);
+        $content = (empty($param)) ? null : (($type === 'GET') ? http_build_query($param) : json_encode($param));
 
-        return $this->sendRequest($type, $url, $content);
+        return $this->sendRequest($type, $url, $content, $headers);
     }
 
     /**
@@ -169,5 +170,58 @@ class ConsultationRequest extends AbstractRequest
         $this->setEndpoint("consultas/notas/data/cmc");
 
         return new \DateTime($this->execute());
+    }
+
+    /**
+     * Performs consultation of invoices by search fields
+     * @param array $data   Array with post data
+     * @return
+     */
+    public function postFields(array $data = [])
+    {
+        $this->setEndpoint("consultas/notas/filtro");
+
+        $param = $this->validateSearchFields($data);
+
+        return $this->execute($param, 'POST');
+    }
+
+    /**
+     * Check if post fields are in allowed filters and return only the valid fields
+     * @param array $fields     Array  containing a list of all post fields
+     * @return array $validFields   Array containing only the valid fields
+     */
+    private function validateSearchFields(array $fields = [])
+    {
+        $validFields = [];
+        if (empty($fields)) {
+            return $validFields;
+        }
+
+        $allowed = [
+            'cdVerificacao',
+            'dataInicio',
+            'dataFim',
+            'id',
+            'identificacaoPrestador',
+            'razaoSocial',
+            'identificacaoTomador',
+            'numero',
+            'numeroAedf',
+            'numeroFim',
+            'numeroInicio',
+            'situacao',
+            'idCnae',
+            'ordenacaoDecrescente',
+            'pagina'
+        ];
+
+        foreach ($fields as $field => $value) {
+            if (in_array($field, $allowed)) {
+                $validFields[$field] = $value;
+            }
+        }
+
+        return $validFields;
     }
 }

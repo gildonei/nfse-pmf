@@ -156,4 +156,28 @@ class NFSeApi
 
         return $request->lastDateByCmc($cmc);
     }
+
+    /**
+     * Returns the date of last emitted invoice by provider CMC
+     *
+     * @param array $data   Array containing POST data
+     * @return array
+     * [
+     *      "notas": [
+     *          [...]
+     *      ],
+     *      "pagina" => 0,
+     *      "totalPaginas" => 0,
+     *      "totalRegistros" =>  0,
+     *      "registrosPorPagina" => 0
+     * ]
+     * @throws \NFSe\Exception\NFSeRequestException
+     * @throws \RuntimeException
+     */
+    public function consultByPostFields(array $data = [])
+    {
+        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
+
+        return $request->postFields($data);
+    }
 }

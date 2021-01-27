@@ -59,17 +59,6 @@ abstract class AbstractRequest
      */
     protected function sendRequest($method, $url, $content = null, array $extraHeaders = [])
     {
-        $headers = array_merge([
-            'Accept' => 'Accept: */*',
-            'Accept-Encoding' => 'Accept-Encoding: gzip, deflate, br',
-            'User-Agent' => 'User-Agent: NFSe/1.0 PHP API',
-            'RequestId' => 'RequestId: ' . md5(uniqid())
-        ], $extraHeaders);
-
-        if (empty($headers['Authorization'])) {
-            $headers['Authorization'] = 'Authorization: Bearer '. $this->getIssuer()->getAuthentication()->getAccessToken();
-        }
-
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
@@ -87,6 +76,17 @@ abstract class AbstractRequest
             $headers['Content-Type'] = 'Content-Type: application/x-www-form-urlencoded';
         } else {
             $headers['Content-Length'] = 'Content-Length: 0';
+        }
+
+        $headers = array_merge([
+            'Accept' => 'Accept: */*',
+            'Accept-Encoding' => 'Accept-Encoding: gzip, deflate, br',
+            'User-Agent' => 'User-Agent: NFSe/1.0 PHP API',
+            'RequestId' => 'RequestId: ' . md5(uniqid())
+        ], $extraHeaders);
+
+        if (empty($headers['Authorization'])) {
+            $headers['Authorization'] = 'Authorization: Bearer '. $this->getIssuer()->getAuthentication()->getAccessToken();
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

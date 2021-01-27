@@ -44,6 +44,16 @@ try {
     // pr($invoice);
     // pr('-----------------------------------');
 
+    // pr("INVOICE BY POST FIELDS");
+    // $invoice = $nfse->consultByPostFields([
+    //     'dataInicio' => '2020-12-01 00:00:00',
+    //     'dataInicio' => '2020-12-31 00:00:00',
+    //     'pagina' => 1,
+    //     'ordenacaoDecrescente' => false,
+    // ]);
+    // pr($invoice);
+    // pr('-----------------------------------');
+
 } catch (EntityException $e) {
     echo "EntityException: " . $e->getMessage();
 } catch (NFSeRequestException $e) {
