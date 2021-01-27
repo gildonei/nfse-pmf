@@ -141,4 +141,19 @@ class NFSeApi
 
         return $request->aedfInvoiceNumbers($verificationCode, $cmc);
     }
+
+    /**
+     * Returns the date of last emitted invoice by provider CMC
+     *
+     * @param int $cmc
+     * @return \DateTime
+     * @throws \NFSe\Exception\NFSeRequestException
+     * @throws \RuntimeException
+     */
+    public function consultLastInvoiceDateByCmc($cmc)
+    {
+        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
+
+        return $request->lastDateByCmc($cmc);
+    }
 }
