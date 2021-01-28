@@ -25,6 +25,11 @@ class NFSeApi
     private $environment;
 
     /**
+     * @var \NFSe\Request\ConsultationRequest;
+     */
+    private $consultation;
+
+    /**
      * Create an instance of NFSeApi choosing the environment where the
      * requests will be send
      *      ::production
@@ -37,15 +42,19 @@ class NFSeApi
     {
         $this->setIssuer($issuer);
         $this->setEnvironment((empty($environment)) ? Environment::production() : $environment);
+        $this->setConsultation(new ConsultationRequest($this->getIssuer(), $this->getEnvironment()));
     }
 
     /**
      * @access protected
-     * @return Issuer
+     * @param Issuer $issuer
+     * @return NFSeApi
      */
     protected function setIssuer(Issuer $issuer)
     {
-        return $this->issuer = $issuer;
+        $this->issuer = $issuer;
+
+        return $this;
     }
 
     /**
@@ -59,11 +68,14 @@ class NFSeApi
 
     /**
      * @access protected
-     * @return Environment
+     * @param Environment $environment
+     * @return NFSeApi
      */
     protected function setEnvironment(Environment $environment)
     {
-        return $this->environment = $environment;
+        $this->environment = $environment;
+
+        return $this;
     }
 
     /**
@@ -73,6 +85,27 @@ class NFSeApi
     protected function getEnvironment()
     {
         return $this->environment;
+    }
+
+    /**
+     * @access protected
+     * @param ConsultationRequest $consultation
+     * @return NFSeApi
+     */
+    protected function setConsultation(ConsultationRequest $consultation)
+    {
+        $this->consultation = $consultation;
+
+        return $this;
+    }
+
+    /**
+     * @access protected
+     * @return ConsultationRequest
+     */
+    protected function getConsultation()
+    {
+        return $this->consultation;
     }
 
     /**
@@ -95,9 +128,7 @@ class NFSeApi
      */
     public function consultInvoiceByDateInterval(\DateTime $startDate, \DateTime $endDate)
     {
-        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
-
-        return $request->dateInterval($startDate, $endDate);
+        return $this->getConsultation()->dateInterval($startDate, $endDate);
     }
 
     /**
@@ -121,9 +152,7 @@ class NFSeApi
      */
     public function consultInvoiceByAedfInvoiceNumber($aedf, $startNumber, $endNumber)
     {
-        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
-
-        return $request->aedfInvoiceNumbers($aedf, $startNumber, $endNumber);
+        return $this->getConsultation()->aedfInvoiceNumbers($aedf, $startNumber, $endNumber);
     }
 
     /**
@@ -137,9 +166,7 @@ class NFSeApi
      */
     public function consultInvoiceByVerificationCodeCmc($verificationCode, $cmc)
     {
-        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
-
-        return $request->aedfInvoiceNumbers($verificationCode, $cmc);
+        return $this->getConsultation()->aedfInvoiceNumbers($verificationCode, $cmc);
     }
 
     /**
@@ -152,9 +179,7 @@ class NFSeApi
      */
     public function consultLastInvoiceDateByCmc($cmc)
     {
-        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
-
-        return $request->lastDateByCmc($cmc);
+        return $this->getConsultation()->lastDateByCmc($cmc);
     }
 
     /**
@@ -176,8 +201,6 @@ class NFSeApi
      */
     public function consultByPostFields(array $data = [])
     {
-        $request = new ConsultationRequest($this->getIssuer(), $this->getEnvironment());
-
-        return $request->postFields($data);
+        return $this->getConsultation()->postFields($data);
     }
 }

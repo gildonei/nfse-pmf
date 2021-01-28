@@ -199,7 +199,25 @@ class ConsultationRequest extends AbstractRequest
             return $validFields;
         }
 
-        $allowed = [
+        $allowed = $this->getValidSearchFields();
+
+        foreach ($fields as $field => $value) {
+            if (in_array($field, $allowed)) {
+                $validFields[$field] = $value;
+            }
+        }
+
+        return $validFields;
+    }
+
+    /**
+     * Return an array with valid search fields
+     * @access public
+     * @return array
+     */
+    public function getValidSearchFields()
+    {
+        return [
             'cdVerificacao',
             'dataInicio',
             'dataFim',
@@ -214,15 +232,7 @@ class ConsultationRequest extends AbstractRequest
             'situacao',
             'idCnae',
             'ordenacaoDecrescente',
-            'pagina'
+            'pagina',
         ];
-
-        foreach ($fields as $field => $value) {
-            if (in_array($field, $allowed)) {
-                $validFields[$field] = $value;
-            }
-        }
-
-        return $validFields;
     }
 }
