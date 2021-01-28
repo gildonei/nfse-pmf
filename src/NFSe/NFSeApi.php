@@ -100,10 +100,10 @@ class NFSeApi
     }
 
     /**
-     * @access protected
+     * @access public
      * @return ConsultationRequest
      */
-    protected function getConsultation()
+    public function getConsultation()
     {
         return $this->consultation;
     }
