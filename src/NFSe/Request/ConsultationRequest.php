@@ -182,8 +182,9 @@ class ConsultationRequest extends AbstractRequest
         $this->setEndpoint("consultas/notas/filtro");
 
         $param = $this->validateSearchFields($data);
+        $headers['Content-Type'] = 'Content-Type: application/json';
 
-        return $this->execute($param, 'POST');
+        return $this->execute($param, 'POST', $headers);
     }
 
     /**
