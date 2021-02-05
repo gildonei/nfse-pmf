@@ -45,7 +45,7 @@ class Issuer extends AbstractEntity
      * Define username
      * @param string $username
      * @throws \InvalidArgumentException
-     * @return Issuer
+     * @return \NFSe\Entity\Issuer
      */
     public function setUsername($username)
     {
@@ -70,7 +70,7 @@ class Issuer extends AbstractEntity
      * Define password
      * @param string $pswd
      * @throws \InvalidArgumentException
-     * @return Issuer
+     * @return \NFSe\Entity\Issuer
      */
     public function setPassword($pswd)
     {
@@ -95,7 +95,7 @@ class Issuer extends AbstractEntity
      * Define Client Id
      * @param string $key
      * @throws \InvalidArgumentException
-     * @return Issuer
+     * @return \NFSe\Entity\Issuer
      */
     public function setClientId($key)
     {
@@ -123,7 +123,7 @@ class Issuer extends AbstractEntity
      * Define Client Secret
      * @param string $key
      * @throws \InvalidArgumentException
-     * @return Issuer
+     * @return \NFSe\Entity\Issuer
      */
     public function setClientSecret($key)
     {
@@ -150,7 +150,7 @@ class Issuer extends AbstractEntity
     /**
      * @param \NFSe\Request\AuthenticationRequest $authentication
      * @throws \InvalidArgumentException
-     * @return Issuer
+     * @return \NFSe\Entity\Issuer
      */
     public function setAuthentication(AuthenticationRequest $authentication)
     {
@@ -161,7 +161,7 @@ class Issuer extends AbstractEntity
 
     /**
      * Return Authentication request
-     * @return null|AuthenticationRequest
+     * @return null|\NFSe\Request\AuthenticationRequest
      */
     public function getAuthentication()
     {

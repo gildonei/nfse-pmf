@@ -3,7 +3,13 @@
 namespace NFSe\Entity;
 
 use NFSe\Entity\AbstractEntity;
+use NFSe\Entity\Phone;
 
+/**
+ * Entity Taker
+ *
+ * @package NFSe\Entity
+ */
 class Taker extends AbstractEntity
 {
     /**
@@ -13,10 +19,22 @@ class Taker extends AbstractEntity
     private $name;
 
     /**
-     * Taker email
+     * Taker's company name
+     * @var string
+     */
+    private $companyName;
+
+    /**
+     * Taker's email
      * @var string
      */
     private $email;
+
+    /**
+     * CMC (Código Municipal Contribuinte ou IM Inscrição Municipal - Contributor Municipal Code)
+     * @var int
+     */
+    private $cmc;
 
     /**
      * Taker document
@@ -25,10 +43,28 @@ class Taker extends AbstractEntity
     private $document;
 
     /**
+     * Taker address
+     * @var \NFSe\Entity\Address
+     */
+    private $address;
+
+    /**
+     * Taker additional data
+     * @var string
+     */
+    private $additionalData;
+
+    /**
+     * Taker address
+     * @var \NFSe\Entity\Phone
+     */
+    private $phone;
+
+    /**
      * Define name
      * @param string $name
      * @throws \InvalidArgumentException
-     * @return Taker
+     * @return \NFSe\Entity\Taker
      */
     public function setName($name)
     {
@@ -50,10 +86,35 @@ class Taker extends AbstractEntity
     }
 
     /**
+     * Define name
+     * @param string $name
+     * @throws \InvalidArgumentException
+     * @return \NFSe\Entity\Taker
+     */
+    public function setCompanyName($name)
+    {
+        if (empty($name)) {
+            throw new \InvalidArgumentException('Name is empty!');
+        }
+        $this->companyName = $name;
+
+        return $this;
+    }
+
+    /**
+     * Return name
+     * @return string
+     */
+    public function getCompanyName()
+    {
+        return $this->companyName;
+    }
+
+    /**
      * Define email
      * @param string $email
      * @throws \InvalidArgumentException
-     * @return Taker
+     * @return \NFSe\Entity\Taker
      */
     public function setEmail($email)
     {
@@ -78,17 +139,45 @@ class Taker extends AbstractEntity
     }
 
     /**
+     * Define cmc
+     * @param int $cmc
+     * @throws \InvalidArgumentException
+     * @return \NFSe\Entity\Taker
+     */
+    public function setCmc($cmc)
+    {
+        if (empty($cmc)) {
+            throw new \InvalidArgumentException('CMC is empty!');
+        }
+        if (!is_numeric($cmc) || $cmc <= 0) {
+            throw new \InvalidArgumentException('CMC must be numeric!');
+        }
+        $this->cmc = $cmc;
+
+        return $this;
+    }
+
+    /**
+     * Return cmc
+     * @return int
+     */
+    public function getCmc()
+    {
+        return $this->cmc;
+    }
+
+    /**
      * Define document
      * @param string $document
      * @throws \InvalidArgumentException
-     * @return Taker
+     * @return \NFSe\Entity\Taker
      */
     public function setDocument($document)
     {
         if (empty($document)) {
             throw new \InvalidArgumentException('Document is empty!');
         }
-        $this->document = $document;
+        $this->document = preg_replace('/[^0-9]/', '', $document);
 
         return $this;
     }
@@ -100,5 +189,74 @@ class Taker extends AbstractEntity
     public function getDocument()
     {
         return $this->document;
+    }
+
+    /**
+     * Define taker address
+     * @param \NFSe\Entity\Address $address
+     * @throws \InvalidArgumentException
+     * @return \NFSe\Entity\Taker
+     */
+    public function setAddress(Address $address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Return district
+     * @return \NFSe\Entity\Address
+     */
+    public function getAddress()
+    {
+        return (empty($this->address)) ? new Address() : $this->address;
+    }
+
+    /**
+     * Define additional data
+     * @param string $data
+     * @throws \InvalidArgumentException
+     * @return \NFSe\Entity\Taker
+     */
+    public function setAdditionalData($data)
+    {
+        if (strlen($data) > 600) {
+            throw new \InvalidArgumentException('Additional data exceeds 600 char length!');
+        }
+        $this->additionalData = $data;
+
+        return $this;
+    }
+
+    /**
+     * Return additional data
+     * @return string
+     */
+    public function getAdditionalData()
+    {
+        return $this->additionalData;
+    }
+
+    /**
+     * Define taker phone
+     * @param \NFSe\Entity\Phone $phone
+     * @throws \InvalidArgumentException
+     * @return \NFSe\Entity\Taker
+     */
+    public function setPhone(Phone $phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Return phone
+     * @return \NFSe\Entity\Phone
+     */
+    public function getPhone()
+    {
+        return (empty($this->phone)) ? new Phone() : $this->phone;
     }
 }

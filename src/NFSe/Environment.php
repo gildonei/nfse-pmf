@@ -27,7 +27,7 @@ class Environment
     }
 
     /**
-     * @return Environment
+     * @return \NFSe\Environment
      */
     public static function sandbox()
     {
@@ -37,7 +37,7 @@ class Environment
     }
 
     /**
-     * @return Environment
+     * @return \NFSe\Environment
      */
     public static function production()
     {

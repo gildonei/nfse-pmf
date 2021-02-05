@@ -16,7 +16,7 @@ try {
         ->setClientId($credentials['client_id'])
         ->setClientSecret($credentials['client_secret']);
 
-    $environment = Environment::production();
+    $environment = Environment::sandbox();
 
 
     $authentication = new AuthenticationRequest($issuer, $environment);

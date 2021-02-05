@@ -21,12 +21,6 @@ class Invoice extends AbstractEntity
     private $id;
 
     /**
-     * AEDF number (Authorization for Invoice Emission - Autorização para Emissão de Nota Fiscal)
-     * @var int
-     */
-    private $aedf;
-
-    /**
      * Invoice provider
      * @var Provider
      */
@@ -141,7 +135,7 @@ class Invoice extends AbstractEntity
      * Define invoice id
      * @param int $id
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setId($id)
     {
@@ -164,36 +158,10 @@ class Invoice extends AbstractEntity
     }
 
     /**
-     * Define invoice aedf
-     * @param int $aedf
-     * @throws \InvalidArgumentException
-     * @return Invoice
-     */
-    public function setAedf($aedf)
-    {
-        $aedf = (int)$aedf;
-        if ($aedf  <= 0) {
-            throw new \InvalidArgumentException('Invoice AEDF must be a positive number!');
-        }
-        $this->aedf = $aedf;
-
-        return $this;
-    }
-
-    /**
-     * Returns invoice aedf
-     * @return int
-     */
-    public function getAedf()
-    {
-        return $this->aedf;
-    }
-
-    /**
      * Define invoice provider
-     * @param Provider $provider
+     * @param \NFSe\Entity\Provider $provider
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setProvider(Provider $provider)
     {
@@ -204,7 +172,7 @@ class Invoice extends AbstractEntity
 
     /**
      * Returns invoice provider
-     * @return Provider
+     * @return \NFSe\Entity\Provider
      */
     public function getProvider()
     {
@@ -213,9 +181,9 @@ class Invoice extends AbstractEntity
 
     /**
      * Define invoice taker
-     * @param Taker  $taker
+     * @param \NFSe\Entity\Taker  $taker
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setTaker(Taker $taker)
     {
@@ -226,7 +194,7 @@ class Invoice extends AbstractEntity
 
     /**
      * Returns invoice taker
-     * @return Taker
+     * @return \NFSe\Entity\Taker
      */
     public function getTaker()
     {
@@ -236,7 +204,7 @@ class Invoice extends AbstractEntity
     /**
      * Define invoice emitted date
      * @param DateTime $date
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setEmitted(\DateTime $date)
     {
@@ -257,7 +225,7 @@ class Invoice extends AbstractEntity
     /**
      * Define invoice processed date
      * @param DateTime $date
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setProcessed(\DateTime $date)
     {
@@ -278,7 +246,7 @@ class Invoice extends AbstractEntity
     /**
      * Define invoice cancelled date
      * @param null|DateTime $date
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setCancelled(\DateTime $date = null)
     {
@@ -300,7 +268,7 @@ class Invoice extends AbstractEntity
      * Define cfps - Código Fiscal de Prestação de Serviços
      * @param string $cfps
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setCfps($cfps)
     {
@@ -324,7 +292,7 @@ class Invoice extends AbstractEntity
     /**
      * Define cancel reason
      * @param null|string $reason
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setCancelReason($reason = null)
     {
@@ -346,7 +314,7 @@ class Invoice extends AbstractEntity
      * Define invoice number
      * @param int $number
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setNumber($number)
     {
@@ -372,7 +340,7 @@ class Invoice extends AbstractEntity
      * Define invoice value
      * @param float $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setValue($value)
     {
@@ -397,7 +365,7 @@ class Invoice extends AbstractEntity
      * Define invoice iss
      * @param float $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setIss($value)
     {
@@ -422,7 +390,7 @@ class Invoice extends AbstractEntity
      * Define invoice day
      * @param int $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setDay($value)
     {
@@ -450,7 +418,7 @@ class Invoice extends AbstractEntity
      * Define invoice month
      * @param int $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setMonth($value)
     {
@@ -478,7 +446,7 @@ class Invoice extends AbstractEntity
      * Define invoice year
      * @param int $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setYear($value)
     {
@@ -507,7 +475,7 @@ class Invoice extends AbstractEntity
      * Define invoice status
      * @param bool $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setStatus($value)
     {
@@ -532,7 +500,7 @@ class Invoice extends AbstractEntity
      * Define invoice verificationCode
      * @param bool $value
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setVerificationCode($value)
     {
@@ -556,7 +524,7 @@ class Invoice extends AbstractEntity
     /**
      * Define invoice identification
      * @param null|string $value
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setIdentification($value = null)
     {
@@ -578,7 +546,7 @@ class Invoice extends AbstractEntity
      * Define invoice decl
      * @param string $value S | N
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setDecl($value)
     {
@@ -602,7 +570,7 @@ class Invoice extends AbstractEntity
     /**
      * Define invoice declDate date
      * @param null|DateTime $date
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setDeclDate(\DateTime $date = null)
     {
@@ -624,7 +592,7 @@ class Invoice extends AbstractEntity
      * Define invoice simples
      * @param sring $value  S | N
      * @throws \InvalidArgumentException
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      */
     public function setSimples($value)
     {
@@ -675,7 +643,7 @@ class Invoice extends AbstractEntity
      *      "valorIss" => 0,
      *      "valorNota" => 0
      * ]
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      * @throws \InvalidArgumentException
      */
     public function hydrate(array $data = [])
@@ -686,13 +654,13 @@ class Invoice extends AbstractEntity
         $provider = $invoice->getProvider()
             ->setName($data['nomePrestador'])
             ->setCmc($data['cmcPrestador'])
-            ->setCnpj($data['identificacaoPrestador']);
+            ->setCnpj($data['identificacaoPrestador'])
+            ->setAedf($data['aedf']);
         $taker = $invoice->getTaker()
             ->setName($data['nomeTomador'])
             ->setDocument($data['identificacaoTomador'])
             ->setEmail($data['emailTomador']);
         $invoice->setId($data['id'])
-            ->setAedf($data['aedf'])
             ->setProvider($provider)
             ->setTaker($taker)
             ->setEmitted(new \DateTime($data['dataEmissao']))

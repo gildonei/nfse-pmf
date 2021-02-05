@@ -4,8 +4,8 @@ namespace NFSe;
 
 use DateTime;
 use NFSe\Entity\Issuer;
-use NFSe\Entity\Invoice;
 use NFSe\Request\ConsultationRequest;
+use NFSe\Request\EmissionRequest;
 
 /**
  * The NFSe API for creation and consult of bank slip.
@@ -30,25 +30,31 @@ class NFSeApi
     private $consultation;
 
     /**
+     * @var \NFSe\Request\EmissionRequest;
+     */
+    private $emission;
+
+    /**
      * Create an instance of NFSeApi choosing the environment where the
      * requests will be send
      *      ::production
      *      ::sandbox
      *
-     * @param Issuer $issuer The merchant credentials
-     * @param Environment environment
+     * @param \NFSe\Entity\Issuer $issuer The merchant credentials
+     * @param \NFSe\Environment environment
      */
     public function __construct(Issuer $issuer, Environment $environment = null)
     {
         $this->setIssuer($issuer);
         $this->setEnvironment((empty($environment)) ? Environment::production() : $environment);
         $this->setConsultation(new ConsultationRequest($this->getIssuer(), $this->getEnvironment()));
+        $this->setEmission(new EmissionRequest($this->getIssuer(), $this->getEnvironment()));
     }
 
     /**
      * @access protected
      * @param Issuer $issuer
-     * @return NFSeApi
+     * @return \NFSe\NFSeApi
      */
     protected function setIssuer(Issuer $issuer)
     {
@@ -59,7 +65,7 @@ class NFSeApi
 
     /**
      * @access protected
-     * @return Issuer
+     * @return \NFSe\Entity\Issuer
      */
     protected function getIssuer()
     {
@@ -68,7 +74,7 @@ class NFSeApi
 
     /**
      * @access protected
-     * @param Environment $environment
+     * @param \NFSe\Environment $environment
      * @return NFSeApi
      */
     protected function setEnvironment(Environment $environment)
@@ -80,7 +86,7 @@ class NFSeApi
 
     /**
      * @access protected
-     * @return Environment
+     * @return \NFSe\Environment
      */
     protected function getEnvironment()
     {
@@ -89,7 +95,7 @@ class NFSeApi
 
     /**
      * @access protected
-     * @param ConsultationRequest $consultation
+     * @param \NFSe\Request\ConsultationRequest $consultation
      * @return NFSeApi
      */
     protected function setConsultation(ConsultationRequest $consultation)
@@ -101,11 +107,32 @@ class NFSeApi
 
     /**
      * @access public
-     * @return ConsultationRequest
+     * @return \NFSe\Request\ConsultationRequest
      */
     public function getConsultation()
     {
         return $this->consultation;
+    }
+
+    /**
+     * @access protected
+     * @param \NFSe\Request\EmissionRequest $consultation
+     * @return NFSeApi
+     */
+    protected function setEmission(EmissionRequest $consultation)
+    {
+        $this->consultation = $consultation;
+
+        return $this;
+    }
+
+    /**
+     * @access public
+     * @return \NFSe\Request\EmissionRequest
+     */
+    public function getEmission()
+    {
+        return $this->emission;
     }
 
     /**
@@ -160,13 +187,13 @@ class NFSeApi
      *
      * @param string $verificationCode
      * @param int $cmc
-     * @return Invoice
+     * @return \NFSe\Entity\Invoice
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
     public function consultInvoiceByVerificationCodeCmc($verificationCode, $cmc)
     {
-        return $this->getConsultation()->aedfInvoiceNumbers($verificationCode, $cmc);
+        return $this->getConsultation()->verificationCodeCmc($verificationCode, $cmc);
     }
 
     /**

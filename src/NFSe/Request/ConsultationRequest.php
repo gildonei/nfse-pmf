@@ -6,12 +6,11 @@ use DateTime;
 use NFSe\Entity\Invoice;
 use NFSe\Request\AbstractRequest;
 use NFSe\Entity\Issuer;
-use NFSe\Entity\Provider;
 use NFSe\Environment;
 use NFSe\Exception\NFSeRequestException;
 
 /**
- * Class AuthenticationRequest
+ * Class ConsultationRequest
  *
  * @package NFSe\Request
  */
@@ -30,10 +29,6 @@ class ConsultationRequest extends AbstractRequest
 
     /**
      * @param array $param
-     *      username => Issuer's username
-     *      password => Issuer's password
-     *      client_id => Issuer's client id
-     *      client_secret => Issuer's client secret
      * @param string $type  Request type, default => GET. Allowed values POST, PUT, DELETE, GET
      * @param array $headers  Extra headers
      * @return mixed
@@ -55,7 +50,8 @@ class ConsultationRequest extends AbstractRequest
     }
 
     /**
-     * @param \JsonSerializable $json
+     * @access protected
+     * @param string $json
      * @return mixed
      */
     protected function unserialize($json)
