@@ -116,12 +116,12 @@ class NFSeApi
 
     /**
      * @access protected
-     * @param \NFSe\Request\EmissionRequest $consultation
+     * @param \NFSe\Request\EmissionRequest $emission
      * @return NFSeApi
      */
-    protected function setEmission(EmissionRequest $consultation)
+    protected function setEmission(EmissionRequest $emission)
     {
-        $this->consultation = $consultation;
+        $this->emission = $emission;
 
         return $this;
     }

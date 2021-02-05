@@ -9,7 +9,7 @@ use NFSe\Environment;
 use NFSe\Exception\NFSeRequestException;
 
 /**
- * Class Emission
+ * Class EmissionRequest
  *
  * @package NFSe\Request
  */
@@ -75,8 +75,11 @@ class EmissionRequest extends AbstractRequest
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1processa-simplificada/post Request XML
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/exemploRetornoProcessamentoSimplificada.xml Response XML
      */
-    public function simplied(XmlEntity $xml)
+    public function simplified(XmlEntity $xml)
     {
+        return false;
+
+        // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/processa-simplificada");
 
         return $this->execute($xml->generateXml('sample.xml'));
@@ -91,6 +94,9 @@ class EmissionRequest extends AbstractRequest
      */
     public function replacement(XmlEntity $xml)
     {
+        return false;
+
+        // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/processa-substituta");
 
         return $this->execute($xml->generateXml('sample.xml'));
@@ -104,6 +110,9 @@ class EmissionRequest extends AbstractRequest
      */
     public function validation(XmlEntity $xml)
     {
+        return false;
+
+        // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/valida-processamento");
 
         return $this->execute($xml->generateXml('sample.xml'));
