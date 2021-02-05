@@ -369,19 +369,12 @@ class XmlEntity extends AbstractEntity
     /**
      * Generate XML of invoice to be sent
      * @access public
-     * @param string $filename  sample.xml
-     * @param string $savePath  absolut path where file should be saved, if empty
+     * @param string $filename  filename.xml, including absolut path where file should be saved
      * @throws \InvalidArgumentException
      * @return string|void   Returns xml file if savePath is not set
      */
-    public function generateXml($filename = null, $savePath = null)
+    public function generateXml($filename = null)
     {
-        if (empty($filename)) {
-            throw new \InvalidArgumentException('Filename is empty!');
-        }
-        if (stristr('.xml', $filename)) {
-            throw new \InvalidArgumentException('Filename does\'t have .XML extension!');
-        }
         $signature = null;
 
         $xml = new \DOMDocument('1.0', 'UTF-8');
@@ -400,58 +393,55 @@ class XmlEntity extends AbstractEntity
             $xmlService->appendChild($xml->createElement('baseCalculo', $service->getBaseCalc()));
             $xmlService->appendChild($xml->createElement('cst', $service->getCst()));
             $xmlService->appendChild($xml->createElement('idCNAE', $service->getIdCnae()));
-            // $xmlService->appendChild($xml->createElement('codigoCNAE', $service->getRateValue()));
-            // $xmlService->appendChild($xml->createElement('descricaoCNAE', $service->getRateValue()));
             $xmlService->appendChild($xml->createElement('descricaoServico', $service->getDescription()));
             $xmlService ->appendChild($xml->createElement('quantidade', $service->getAmount()));
             $xmlService->appendChild($xml->createElement('valorUnitario', $service->getUnitValue()))
                 ->appendChild($xml->createElement('valorTotal', $service->getTotalValue()));
 
+            $xmlServiceList->appendChild($xmlService);
         }
-        $xmlServiceList->appendChild($xmlService);
 
         // Append all extra nodes
-        // $xmlNfse->appendChild($xml->createElement('dataEmissao', date('Y-m-d'));
-
-        // $xmlNfse->appendChild($xml->createElement('razaoSocialTomador', $this->getTaker()->getCompanyName());
-        // $xmlNfse->appendChild($xml->createElement('identificacaoTomador', $this->getTaker()->getDocument()));
-        // $xmlNfse->appendChild($xml->createElement('inscricaoMunicipalTomador', $this->getTaker()->getCmc()));
-        // $xmlNfse->appendChild($xml->createElement('codigoPostalTomador', $this->getTaker()->getAddress()->getZipcode()));
-        // $xmlNfse->appendChild($xml->createElement('logradouroTomador', $this->getTaker()->getAddress()->getStreet()));
-        // $xmlNfse->appendChild($xml->createElement('numeroEnderecoTomador', $this->getTaker()->getAddress()->getStreetNumber()));
-        // $xmlNfse->appendChild($xml->createElement('complementoEnderecoTomador', $this->getTaker()->getAddress()->getComplement()));
-        // $xmlNfse->appendChild($xml->createElement('bairroTomador', $this->getTaker()->getAddress()->getDistrict()));
-        // $xmlNfse->appendChild($xml->createElement('codigoMunicipioTomador', $this->getTaker()->getAddress()->getCityCode()));
-        // $xmlNfse->appendChild($xml->createElement('nomeMunicipioTomador', $this->getTaker()->getAddress()->getCity()));
-        // $xmlNfse->appendChild($xml->createElement('ufTomador', $this->getTaker()->getAddress()->getState());
-        // $xmlNfse->appendChild($xml->createElement('paisTomador', '1058');
-        // $xmlNfse->appendChild($xml->createElement('dadosAdicionais', $this->getTaker()->getAdditionalData()));
-        // $xmlNfse->appendChild($xml->createElement('telefoneTomador', $this->getTaker()->getPhone()->getPhone());
-        // $xmlNfse->appendChild($xml->createElement('emailTomador', $this->getTaker()->getEmail()));
-
-        // $xmlNfse->appendChild($xml->createElement('numeroAEDF', $this->getProvider()->getAedf()));
-        // $xmlNfse->appendChild($xml->createElement('identificacao', $this->getIdentification()));
-
-        // $xmlNfse->appendChild($xml->createElement('itensServico', $xmlServiceList));
-
-        // $xmlNfse->appendChild($xml->createElement('baseCalculo', $this->getBaseCalc()))
-        // $xmlNfse->appendChild($xml->createElement('baseCalculoSubstituicao', $this->getBaseCalcReplacement()));
-        // $xmlNfse->appendChild($xml->createElement('valorISSQN', $this->getIssqn()));
-        // $xmlNfse->appendChild($xml->createElement('valorISSQNSubstituicao', $this->getIssqnReplacement()));
-        // $xmlNfse->appendChild($xml->createElement('valorTotalServicos', $this->getTotalValue()));
-
-        // $xmlNfse->appendChild($xml->createElement('cfps', $this->getCfps()));
-        // $xmlNfse->appendChild($xml->createElement('ds:Signature', $xmlSignature));
+        $xmlNfse->appendChild($xml->createElement('dataEmissao', date('Y-m-d')));
+        $xmlNfse->appendChild($xml->createElement('razaoSocialTomador', $this->getTaker()->getCompanyName()));
+        $xmlNfse->appendChild($xml->createElement('identificacaoTomador', $this->getTaker()->getDocument()));
+        $xmlNfse->appendChild($xml->createElement('inscricaoMunicipalTomador', $this->getTaker()->getCmc()));
+        $xmlNfse->appendChild($xml->createElement('codigoPostalTomador', $this->getTaker()->getAddress()->getZipcode()));
+        $xmlNfse->appendChild($xml->createElement('logradouroTomador', $this->getTaker()->getAddress()->getStreet()));
+        $xmlNfse->appendChild($xml->createElement('numeroEnderecoTomador', $this->getTaker()->getAddress()->getStreetNumber()));
+        $xmlNfse->appendChild($xml->createElement('complementoEnderecoTomador', $this->getTaker()->getAddress()->getComplement()));
+        $xmlNfse->appendChild($xml->createElement('bairroTomador', $this->getTaker()->getAddress()->getDistrict()));
+        $xmlNfse->appendChild($xml->createElement('codigoMunicipioTomador', $this->getTaker()->getAddress()->getCityCode()));
+        $xmlNfse->appendChild($xml->createElement('nomeMunicipioTomador', $this->getTaker()->getAddress()->getCity()));
+        $xmlNfse->appendChild($xml->createElement('ufTomador', $this->getTaker()->getAddress()->getState()));
+        $xmlNfse->appendChild($xml->createElement('paisTomador', '1058'));
+        $xmlNfse->appendChild($xml->createElement('dadosAdicionais', $this->getTaker()->getAdditionalData()));
+        $xmlNfse->appendChild($xml->createElement('telefoneTomador', $this->getTaker()->getPhone()->getPhone()));
+        $xmlNfse->appendChild($xml->createElement('emailTomador', $this->getTaker()->getEmail()));
+        $xmlNfse->appendChild($xml->createElement('numeroAEDF', $this->getProvider()->getAedf()));
+        $xmlNfse->appendChild($xml->createElement('identificacao', $this->getIdentification()));
+        $xmlNfse->appendChild($xmlServiceList);
+        $xmlNfse->appendChild($xml->createElement('baseCalculo', $this->getBaseCalc()));
+        $xmlNfse->appendChild($xml->createElement('baseCalculoSubstituicao', $this->getBaseCalcReplacement()));
+        $xmlNfse->appendChild($xml->createElement('valorISSQN', $this->getIssqn()));
+        $xmlNfse->appendChild($xml->createElement('valorISSQNSubstituicao', $this->getIssqnReplacement()));
+        $xmlNfse->appendChild($xml->createElement('valorTotalServicos', $this->getTotalValue()));
+        $xmlNfse->appendChild($xml->createElement('cfps', $this->getCfps()));
+        $xmlNfse->appendChild($xmlSignature);
 
         $xml->appendChild($xmlNfse);
 
-        if (empty($savePath)) {
+        if (empty($filename)) {
             return $xml->saveXML();
         } else {
-            if (!file_exists($savePath)) {
-                throw new \InvalidArgumentException('Save path do not exists!');
+            $path = pathinfo($filename);
+            if (strtolower($path['extension']) !== 'xml') {
+                throw new \InvalidArgumentException('Filename does\'t have .XML extension!');
             }
-            if (!is_writable($savePath)) {
+            if (!file_exists($path['dirname'])) {
+                throw new \InvalidArgumentException('Save path does not exists!');
+            }
+            if (!is_writable($path['dirname'])) {
                 throw new \InvalidArgumentException('Save path is not writeable!');
             }
             $xml->save($filename);
@@ -460,8 +450,11 @@ class XmlEntity extends AbstractEntity
         }
     }
 
+    /**
+     * @todo
+     */
     public function validateXml()
     {
-
+        // @TODO
     }
 }

@@ -99,11 +99,11 @@ try {
         )
         ->setSignature($signature);
 
-    $xml->generateXml('teste.xml');
+    $xml->generateXml();
 
-    // $nfse = new NFSeApi($issuer, $environment);
+    $nfse = new NFSeApi($issuer, $environment);
 
-    // $nfse->getEmission()->regular($xml);
+    $nfse->getEmission()->regular($xml);
 
 } catch (EntityException $e) {
     echo "EntityException: " . $e->getMessage();
