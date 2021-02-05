@@ -99,8 +99,6 @@ try {
         )
         ->setSignature($signature);
 
-    $xml->generateXml();
-
     $nfse = new NFSeApi($issuer, $environment);
 
     $nfse->getEmission()->regular($xml);
