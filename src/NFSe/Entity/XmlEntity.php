@@ -394,9 +394,9 @@ class XmlEntity extends AbstractEntity
             $xmlService->appendChild($xml->createElement('cst', $service->getCst()));
             $xmlService->appendChild($xml->createElement('idCNAE', $service->getIdCnae()));
             $xmlService->appendChild($xml->createElement('descricaoServico', $service->getDescription()));
-            $xmlService ->appendChild($xml->createElement('quantidade', $service->getAmount()));
-            $xmlService->appendChild($xml->createElement('valorUnitario', $service->getUnitValue()))
-                ->appendChild($xml->createElement('valorTotal', $service->getTotalValue()));
+            $xmlService->appendChild($xml->createElement('quantidade', $service->getAmount()));
+            $xmlService->appendChild($xml->createElement('valorUnitario', $service->getUnitValue()));
+            $xmlService->appendChild($xml->createElement('valorTotal', $service->getTotalValue()));
 
             $xmlServiceList->appendChild($xmlService);
         }
