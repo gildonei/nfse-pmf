@@ -65,7 +65,7 @@ class EmissionRequest extends AbstractRequest
     {
         $this->setEndpoint("processamento/notas/processa");
 
-        return $this->execute($xml->generateXml('sample.xml'));
+        return $this->execute($xml->generateXml());
     }
 
     /**
@@ -82,7 +82,7 @@ class EmissionRequest extends AbstractRequest
         // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/processa-simplificada");
 
-        return $this->execute($xml->generateXml('sample.xml'));
+        return $this->execute($xml->generateXml());
     }
 
     /**
@@ -99,7 +99,7 @@ class EmissionRequest extends AbstractRequest
         // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/processa-substituta");
 
-        return $this->execute($xml->generateXml('sample.xml'));
+        return $this->execute($xml->generateXml());
     }
 
     /**
@@ -108,13 +108,11 @@ class EmissionRequest extends AbstractRequest
      * @return string
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1valida-processamento/post Request XML
      */
-    public function validation(XmlEntity $xml)
+    public function validateXml(XmlEntity $xml)
     {
-        return false;
-
         // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/valida-processamento");
 
-        return $this->execute($xml->generateXml('sample.xml'));
+        return $this->execute($xml->generateXml());
     }
 }

@@ -4,6 +4,7 @@ namespace NFSe;
 
 use DateTime;
 use NFSe\Entity\Issuer;
+use NFSe\Entity\XmlEntity;
 use NFSe\Request\ConsultationRequest;
 use NFSe\Request\EmissionRequest;
 
@@ -106,10 +107,10 @@ class NFSeApi
     }
 
     /**
-     * @access public
+     * @access protected
      * @return \NFSe\Request\ConsultationRequest
      */
-    public function getConsultation()
+    protected function getConsultation()
     {
         return $this->consultation;
     }
@@ -127,10 +128,10 @@ class NFSeApi
     }
 
     /**
-     * @access public
+     * @access protected
      * @return \NFSe\Request\EmissionRequest
      */
-    public function getEmission()
+    protected function getEmission()
     {
         return $this->emission;
     }
@@ -229,5 +230,27 @@ class NFSeApi
     public function consultByPostFields(array $data = [])
     {
         return $this->getConsultation()->postFields($data);
+    }
+
+    /**
+     * Register Invoice using regular and full schema
+     * @access public
+     * @param \NFSe\Entity\XmlEntity
+     * @return bool
+     */
+    public function registerInvoice(XmlEntity $xml)
+    {
+        return $this->getEmission()->regular($xml);
+    }
+
+    /**
+     * Validate
+     * @access public
+     * @param \NFSe\Entity\XmlEntity
+     * @return bool
+     */
+    public function validateXml(XmlEntity $xml)
+    {
+        return $this->getEmission()->validateXml($xml);
     }
 }

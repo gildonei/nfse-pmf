@@ -449,12 +449,4 @@ class XmlEntity extends AbstractEntity
             return true;
         }
     }
-
-    /**
-     * @todo
-     */
-    public function validateXml()
-    {
-        // @TODO
-    }
 }
