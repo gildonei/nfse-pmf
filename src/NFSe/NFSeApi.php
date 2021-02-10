@@ -233,6 +233,16 @@ class NFSeApi
     }
 
     /**
+     * Return an array of valid fields for input search
+     * @access public
+     * @return array
+     */
+    public function getValidSearchFields()
+    {
+        return $this->getConsultation()->getValidSearchFields();
+    }
+
+    /**
      * Register Invoice using regular and full schema
      * @access public
      * @param \NFSe\Entity\XmlEntity
