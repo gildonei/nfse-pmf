@@ -6,6 +6,9 @@ use NFSe\Entity\AbstractEntity;
 use NFSe\Entity\Provider;
 use NFSe\Entity\Taker;
 use NFSe\Entity\Service;
+use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use RobRichards\XMLSecLibs\XMLSecurityKey;
+
 
 /**
  * Entity Xml
@@ -75,11 +78,26 @@ class XmlEntity extends AbstractEntity
     private $identification;
 
     /**
-     * NFSe Certification signature value
-     * @var string X509 Value
-     * @see xmlns:ds=http://www.w3.org/2000/09/xmldsig
+     * Array containing ceritifica files obtained with openssl_pkcs12_read
+     * [
+     *  'cert' => ''
+     *  'pkey' => ''
+     * ]
+     * @var array
      */
-    private $signature;
+    private $certificates;
+
+    /**
+     * PKCS12 file path
+     * @var string ./path/certificate/file.pfx
+     */
+    private $certificatePath;
+
+    /**
+     * PKCS12 passphrase
+     * @var string
+     */
+    private $passphrase;
 
     /**
      * Set provider
@@ -342,17 +360,18 @@ class XmlEntity extends AbstractEntity
     }
 
     /**
-     * Define Signature
-     * @param string $signature
+     * Define PFX certificate path and parses it into an array
+     * @param string $path
      * @throws \InvalidArgumentException
      * @return \NFSe\Entity\XmlEntity
+     * @see https://www.php.net/manual/pt_BR/function.openssl-pkcs12-read
      */
-    public function setSignature($signature = null)
+    public function setCertificatePath($path = null)
     {
-        if (empty($signature)) {
-            throw new \InvalidArgumentException('Signature is empty!');
+        if (!file_exists($path)) {
+            throw new \InvalidArgumentException('Certificate file not found in path!');
         }
-        $this->signature = $signature;
+        $this->certificatePath = $path;
 
         return $this;
     }
@@ -361,21 +380,64 @@ class XmlEntity extends AbstractEntity
      * Return username
      * @return string
      */
-    public function getSignature()
+    public function getCertificatePath()
     {
-        return $this->signature;
+        return $this->certificatePath;
     }
 
     /**
-     * Generate XML of invoice to be sent
+     * Return certificates
+     * @return array
+     * [
+     *      'cert' => 'public certificate'
+     *      'pkey' => 'private certificate key'
+     * ]
+     */
+    public function getCertificates()
+    {
+        (empty($this->certificates)) ?
+            openssl_pkcs12_read(file_get_contents($this->getCertificatePath()), $this->certificates, $this->getPassphrase()) :
+            $this->certificates;
+
+        return $this->certificates;
+    }
+
+    /**
+     * Define PFX certificate private key passphrase
+     * @param string $value
+     * @throws \InvalidArgumentException
+     * @return \NFSe\Entity\XmlEntity
+     */
+    public function setPassphrase($value = null)
+    {
+        $this->passphrase = $value;
+
+        return $this;
+    }
+
+    /**
+     * Return username
+     * @return string
+     */
+    public function getPassphrase()
+    {
+        return $this->passphrase;
+    }
+
+    /**
+     * Generate and Sign XML of invoice to be sent
      * @access public
      * @param string $filename  filename.xml, including absolut path where file should be saved
+     * @param string $pfx  pfx certificate file
+     * @param string $passphrase  private key passphrase if has a key
      * @throws \InvalidArgumentException
      * @return string|void   Returns xml file if savePath is not set
      */
     public function generateXml($filename = null)
     {
-        $signature = null;
+        if (empty($this->getCertificatePath())) {
+            throw new \InvalidArgumentException('PFX certificate path is empty!');
+        }
 
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
@@ -383,42 +445,6 @@ class XmlEntity extends AbstractEntity
         // Create main nodes
         $xmlNfse = $dom->createElement('xmlProcessamentoNfpse');
         $xmlServiceList = $dom->createElement('itensServico');
-        $canonical = $dom->createElementNS('CanonicalizationMethod', 'Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
-        $signatureMethod = $dom->createElementNS('SignatureMethod', 'Algorithm', 'http://www.w3.org/2000/09/xmldsig#rsa-sha1');
-
-        $transform1 = $dom->createElementNS('Transform', 'Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
-        $transform2 = $dom->createElementNS('Transform', 'Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
-        $digestMethod = $dom->createElementNS('DigestMethod', 'Algorithm', 'http://www.w3.org/2000/09/xmldsig#sha1');
-        $digestValue = $dom->createElement('DigestValue', '2NEHH1mLATUyAxChwQTfCUgKrpY=');
-
-        $transforms = $dom->createElement('Transforms');
-        $transforms->appendChild($transform1);
-        $transforms->appendChild($transform2);
-
-        $ref = $dom->createElement('Reference');
-        $ref->setAttribute('URI', '');
-        $ref->appendChild($transforms);
-        $ref->appendChild($digestMethod);
-        $ref->appendChild($digestValue);
-
-        $signedInfo = $dom->createElement('SignedInfo');
-        $signedInfo->appendChild($canonical);
-        $signedInfo->appendChild($signatureMethod);
-        $signedInfo->appendChild($ref);
-
-        $signatureValue = $dom->createElement('SignatureValue', 'nR0MlLL2WBZvGBaxvYSyLIq8tvodWmrIEI2MBYb4ZFN/vLMqVTYH/H+/tvBOI4SKcN1++wE+QVdT oI61y2VjfGyzw1KrbdIcIgzeEi+BIQRKuswx+Ko+Xx5eFKPmK8GvDAwIRMO7Qy1U0rLVla/8kMch 9Z1DrvBRIi2dnDXiWIHdBzY2qgHOM4Shx9HCL9Z/nvr9p22nmQm/sJtQ9uGWDC6gyF4Z+I7MrrnV FOJUYe4ICEAbviphd0hmIFbkjgkSc/cHo2Akxjjv7f8fnwxk9KmIoaNIfNCFFf+WNpAglIAnSIUX g6q3LaIekNgGmrhYLuH+3n+zx09/4CV9/tGATA==');
-
-        $x509Certificate = $dom->createElement('X509Certificate', 'MIIHkDCCBXigAwIBAgIEANGrAzANBgkqhkiG9w0BAQsFADCBiTELMAkGA1UEBhMCQlIxEzARBgNV BAoTCklDUC1CcmFzaWwxNjA0BgNVBAsTLVNlY3JldGFyaWEgZGEgUmVjZWl0YSBGZWRlcmFsIGRv IEJyYXNpbCAtIFJGQjEtMCsGA1UEAxMkQXV0b3JpZGFkZSBDZXJ0aWZpY2Fkb3JhIFNFUlBST1JG QnY0MB4XDTE2MTEwODEyMzAzN1oXDTE3MTEwODEyMzAzN1owgeYxCzAJBgNVBAYTAkJSMQswCQYD VQQIEwJTQzEWMBQGA1UEBxMNRkxPUklBTk9QT0xJUzETMBEGA1UEChMKSUNQLUJyYXNpbDE2MDQG A1UECxMtU2VjcmV0YXJpYSBkYSBSZWNlaXRhIEZlZGVyYWwgZG8gQnJhc2lsIC0gUkZCMREwDwYD VQQLEwhBUlNFUlBSTzEWMBQGA1UECxMNUkZCIGUtQ05QSiBBMTE6MDgGA1UEAxMxQlJBTUUgQVVU T01BQ0FPIEUgU0lTVEVNQVMgTFREQSBNRTowMzI4ODM3OTAwMDE3NTCCASIwDQYJKoZIhvcNAQEB BQADggEPADCCAQoCggEBAKvo98PEosyVq7PN/wbLO4UP/TKWetu9NAMiGAHu6erJil31/+1tS0nj XOWJtvDMoKgZ/vqJqPjLqSBRSbyTQetTtLbK8tIZqH0QroGIO9UY4AcSArM6Q+I7vouhSAalkBX7 NkNq2efbQKkN6NzNP3O5nC0r15X95z2PcM4IayKX41o+uSpF47xVbR1kliCAFPs7yKz2a9LqwAAB FQ0b6/mmdE7rhqhphGl0r9LDsssLl6dtjjx32jjVjXsGllUSVahhYT+xBaCVHgn7d7eOgfLXOk3n yBfh2ziQTifyPBunvGgX2bcg0WD2W20MPDO9I3EBzMQGK1V4cjJzVoEoZNcCAwEAAaOCAp8wggKb MB8GA1UdIwQYMBaAFDAKLAy4Nyvg9toC/oCCZ5aYVBk7MFsGA1UdIARUMFIwUAYGYEwBAgEKMEYw RAYIKwYBBQUHAgEWOGh0dHA6Ly9yZXBvc2l0b3Jpby5zZXJwcm8uZ292LmJyL2RvY3MvZHBjYWNz ZXJwcm9yZmIucGRmMIHRBgNVHR8EgckwgcYwPKA6oDiGNmh0dHA6Ly9yZXBvc2l0b3Jpby5zZXJw cm8uZ292LmJyL2xjci9hY3NlcnByb3JmYnY0LmNybDA+oDygOoY4aHR0cDovL2NlcnRpZmljYWRv czIuc2VycHJvLmdvdi5ici9sY3IvYWNzZXJwcm9yZmJ2NC5jcmwwRqBEoEKGQGh0dHA6Ly9yZXBv c2l0b3Jpby5pY3BicmFzaWwuZ292LmJyL2xjci9zZXJwcm8vYWNzZXJwcm9yZmJ2NC5jcmwwVgYI KwYBBQUHAQEESjBIMEYGCCsGAQUFBzAChjpodHRwOi8vcmVwb3NpdG9yaW8uc2VycHJvLmdvdi5i ci9jYWRlaWFzL2Fjc2VycHJvcmZidjQucDdiMIG/BgNVHREEgbcwgbSgOAYFYEwBAwSgLwQtMzAx MDE5Njg2NTcxMTMxOTk0OTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwoCEGBWBMAQMCoBgEFkxV Q0lBTk8gQlJBTUUgRkVSUkVJUkGgGQYFYEwBAwOgEAQOMDMyODgzNzkwMDAxNzWgFwYFYEwBAweg DgQMMDAwMDAwMDAwMDAwgSFQUklTQ0lMQUBDT05USEFMRVNDT05UQUJJTC5DT00uQlIwDgYDVR0P AQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMEBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOC AgEAUO9Dw1OIAqVmG3Hi+nZimrcl3j/WFJ60v44jkgDT/LWAgcSvVwRecNo13wERVjuhmQcOYsya CHEd0SU6ztpLwq0ZwyZjwgbP09YVp7nG7C+AXF3fr6oV+tj/fdgEnNNCRSes2UnNtztNq5tixyzd yZ3qukzXH8ssdlqpXCZyirepVc2xeJ167z3L+lIeJPzINWoXT/4yI1wqw6XJ8H/E4c9A8hPV59qy +JbXTWR5T7xwaE7lD365YYjtbs9NIKgue7V24quJ0uMMyiylR5K0wb0yjOre4hIlx8TgI9W68e1Q gCR6Mwyb8fFIW9B7zpxBrpJ96HAYdFnK3VYFtc6plrr+cUnafBRR6xPp/gMWHomvv8JYTt5fNy84 4I9+u6TRuah34amzjvAjKQs1Wq1i762nOg1NIud2OhNsDkYqNmSb70ZHGtxYNi+h1CTYk5jIRJYl 1A2AsoKLx+XOxFtFxPtRPegKNNrzK6Zq+GFhVuSft0nHgQEoVdwcAQA3qAtViCjOMCPI+AOocA4w b1KXKvyPUaKDhp2EXIeOWoH5pnNaG2JAdK2/FvJ/JQE+ArS6DyXVlApQzB+ugTMF+ri8oCqn8GfI UVH1qgsT40l6aNyw6nV27rOoDtLjUhzX9BSJmwXUx2EalEW6hRnrMyFhisRSm1ANoLKFipnDFTp7 dM4=');
-        $x509Data = $dom->createElement('X509Data');
-        $x509Data->appendChild($x509Certificate);
-
-        $keyInfo = $dom->createElement('KeyInfo');
-        $keyInfo->appendChild($x509Data);
-
-        $xmlSignature = $dom->createElementNS('http://www.w3.org/2000/09/xmldsig', 'ds:Signature', $signature);
-        $xmlSignature->appendChild($signedInfo);
-        $xmlSignature->appendChild($signatureValue);
-        $xmlSignature->appendChild($keyInfo);
 
         // Append service nodes
         foreach ($this->getServiceList() as $service)
@@ -462,7 +488,42 @@ class XmlEntity extends AbstractEntity
         $xmlNfse->appendChild($dom->createElement('valorISSQNSubstituicao', $this->getIssqnReplacement()));
         $xmlNfse->appendChild($dom->createElement('valorTotalServicos', $this->getTotalValue()));
         $xmlNfse->appendChild($dom->createElement('cfps', $this->getCfps()));
-        $xmlNfse->appendChild($xmlSignature);
+
+        // Read PFX (PKCS12) file
+        $cert = $this->getCertificates();
+
+        // Create a new Security object
+        $objDSig = new XMLSecurityDSig();
+
+        // Use the c14n exclusive canonicalization
+        $objDSig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
+
+        // Sign using SHA-256
+        $objDSig->addReference(
+            $dom,
+            XMLSecurityDSig::SHA256,
+            ['http://www.w3.org/2000/09/xmldsig#enveloped-signature']
+        );
+
+        // Create a new (private) Security key
+        $objKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, ['type'=>'private']);
+
+        // If key has a passphrase, set it using
+        if (!empty($this->getPassphrase())) {
+            $objKey->passphrase = $this->getPassphrase();
+        }
+
+        // Load the private key
+        $objKey->loadKey($cert['pkey']);
+
+        // Sign the XML file
+        $objDSig->sign($objKey);
+
+        // Add the associated public key to the signature
+        $objDSig->add509Cert($cert['cert']);
+
+        // Append the signature to the XML
+        $objDSig->appendSignature($xmlNfse);
 
         $dom->appendChild($xmlNfse);
 

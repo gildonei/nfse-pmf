@@ -97,13 +97,12 @@ try {
             ->setTotalValue(0.00)
             ->setCst(1)
         )
-        ->setSignature($signature);
+        ->setCertificatePath('./path/certificate/cert.pfx')
+        ->setPassphrase('0000');
 
     $nfse = new NFSeApi($issuer, $environment);
 
-    pr($nfse->validateXml($xml));
-    var_dump($nfse->registerInvoice($xml));
-    // $nfse->getEmission()->regular($xml);
+    $nfse->registerInvoice($xml);
 
 } catch (EntityException $e) {
     echo "EntityException: " . $e->getMessage();
