@@ -46,12 +46,14 @@ class EmissionRequest extends AbstractRequest
 
     /**
      * @access protected
-     * @param string $json
+     * @param string $data
      * @return mixed
      */
-    protected function unserialize($json)
+    protected function unserialize($data)
     {
-        return json_decode($json, true);
+        $json = json_decode($data, true);
+
+        return (empty($data) || empty($json)) ? $data : $json;
     }
 
     /**

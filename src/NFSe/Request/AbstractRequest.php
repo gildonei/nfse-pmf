@@ -128,7 +128,8 @@ abstract class AbstractRequest
                         $exception = new NFSeRequestException($error->message, $statusCode, $exception);
                     }
                 } else {
-                    $exception = new NFSeRequestException($response->message, $statusCode, null);
+                    $message = (isset($response->message)) ? $response->message : $response->error_description;
+                    $exception = new NFSeRequestException($message, $statusCode, null);
                 }
                 throw $exception;
 
