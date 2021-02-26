@@ -112,7 +112,6 @@ class EmissionRequest extends AbstractRequest
      */
     public function validateXml(XmlEntity $xml)
     {
-        // @TODO - Finish implementation
         $this->setEndpoint("processamento/notas/valida-processamento");
 
         return $this->execute($xml->generateXml());
