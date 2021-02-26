@@ -466,7 +466,7 @@ class XmlEntity extends AbstractEntity
         $xmlNfse->appendChild($dom->createElement('dataEmissao', date('Y-m-d')));
         $xmlNfse->appendChild($dom->createElement('razaoSocialTomador', $this->getTaker()->getCompanyName()));
         $xmlNfse->appendChild($dom->createElement('identificacaoTomador', $this->getTaker()->getDocument()));
-        if ($this->getTaker()->getCmc() !== '') {
+        if (!empty($this->getTaker()->getCmc())) {
             $xmlNfse->appendChild($dom->createElement('inscricaoMunicipalTomador', $this->getTaker()->getCmc()));
         }
         $xmlNfse->appendChild($dom->createElement('codigoPostalTomador', $this->getTaker()->getAddress()->getZipcode()));
