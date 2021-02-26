@@ -209,11 +209,8 @@ class Address extends AbstractEntity
      * @throws \InvalidArgumentException
      * @return Address
      */
-    public function setStreetNumber($streetNumber)
+    public function setStreetNumber($streetNumber = '')
     {
-        if (empty($streetNumber)) {
-            throw new \InvalidArgumentException('Street Number is empty!');
-        }
         if (strlen($streetNumber) > 9) {
             throw new \InvalidArgumentException('Street Number exceeds 9 chars length!');
         }
