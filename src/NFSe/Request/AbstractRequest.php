@@ -128,7 +128,13 @@ abstract class AbstractRequest
                         $exception = new NFSeRequestException($error->message, $statusCode, $exception);
                     }
                 } else {
-                    $message = (isset($response->message)) ? $response->message : $response->error_description;
+                    $xmlResponse = simplexml_load_string($responseBody);
+                    if ($xmlResponse === false) {
+                        $message = (isset($response->message)) ? $response->message : $response->error_description;
+                    } else {
+                        $message = (isset($xmlResponse->message) && (string)$xmlResponse->message !== '') ?
+                            (string)$xmlResponse->message : 'Unknown response message';
+                    }
                     $exception = new NFSeRequestException($message, $statusCode, null);
                 }
                 throw $exception;
