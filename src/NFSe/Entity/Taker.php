@@ -94,7 +94,7 @@ class Taker extends AbstractEntity
     public function setCompanyName($name)
     {
         if (empty($name)) {
-            throw new \InvalidArgumentException('Name is empty!');
+            throw new \InvalidArgumentException('Company name is empty!');
         }
         $this->companyName = $name;
 
