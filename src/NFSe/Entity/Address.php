@@ -60,6 +60,12 @@ class Address extends AbstractEntity
     private $complement;
 
     /**
+     * Address complement
+     * @var string
+     */
+    private $country = 1058;
+
+    /**
      * Define district
      * @param string $district
      * @throws \InvalidArgumentException
@@ -173,6 +179,31 @@ class Address extends AbstractEntity
     public function getCity()
     {
         return $this->city;
+    }
+
+    /**
+     * Define country name
+     * @param string $country
+     * @throws \InvalidArgumentException
+     * @return Address
+     */
+    public function setCountry($country)
+    {
+        if (empty($country)) {
+            throw new \InvalidArgumentException('Country is empty!');
+        }
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Return country name
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
     }
 
     /**

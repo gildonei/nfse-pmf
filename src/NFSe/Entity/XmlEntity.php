@@ -6,8 +6,8 @@ use NFSe\Entity\AbstractEntity;
 use NFSe\Entity\Provider;
 use NFSe\Entity\Taker;
 use NFSe\Entity\Service;
-use RobRichards\XMLSecLibs\XMLSecurityDSig;
-use RobRichards\XMLSecLibs\XMLSecurityKey;
+use NFePHP\Common\Certificate;
+use NFePHP\Common\Signer;
 
 
 /**
@@ -443,7 +443,8 @@ class XmlEntity extends AbstractEntity
         $dom->formatOutput = true;
 
         // Create main nodes
-        $xmlNfse = $dom->createElement('xmlProcessamentoNfpse');
+        $xmlMainTag = 'xmlProcessamentoNfpse';
+        $xmlNfse = $dom->createElement($xmlMainTag);
         $xmlServiceList = $dom->createElement('itensServico');
 
         // Append service nodes
@@ -475,9 +476,11 @@ class XmlEntity extends AbstractEntity
         $xmlNfse->appendChild($dom->createElement('complementoEnderecoTomador', $this->getTaker()->getAddress()->getComplement()));
         $xmlNfse->appendChild($dom->createElement('bairroTomador', $this->getTaker()->getAddress()->getDistrict()));
         $xmlNfse->appendChild($dom->createElement('codigoMunicipioTomador', $this->getTaker()->getAddress()->getCityCode()));
-        $xmlNfse->appendChild($dom->createElement('nomeMunicipioTomador', $this->getTaker()->getAddress()->getCity()));
+        if ($this->getTaker()->getAddress()->getCountry() != 1058) {
+            $xmlNfse->appendChild($dom->createElement('nomeMunicipioTomador', $this->getTaker()->getAddress()->getCity()));
+        }
         $xmlNfse->appendChild($dom->createElement('ufTomador', $this->getTaker()->getAddress()->getState()));
-        $xmlNfse->appendChild($dom->createElement('paisTomador', '1058'));
+        $xmlNfse->appendChild($dom->createElement('paisTomador', $this->getTaker()->getAddress()->getCountry()));
         $xmlNfse->appendChild($dom->createElement('dadosAdicionais', $this->getTaker()->getAdditionalData()));
         $xmlNfse->appendChild($dom->createElement('telefoneTomador', $this->getTaker()->getPhone()->getPhone()));
         $xmlNfse->appendChild($dom->createElement('emailTomador', $this->getTaker()->getEmail()));
@@ -491,47 +494,25 @@ class XmlEntity extends AbstractEntity
         $xmlNfse->appendChild($dom->createElement('valorTotalServicos', $this->getTotalValue()));
         $xmlNfse->appendChild($dom->createElement('cfps', $this->getCfps()));
 
-        // Read PFX (PKCS12) file
-        $cert = $this->getCertificates();
-
-        // Create a new Security object
-        $objDSig = new XMLSecurityDSig();
-
-        // Use the c14n exclusive canonicalization
-        $objDSig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
-
-        // Sign using SHA-256
-        $objDSig->addReference(
-            $dom,
-            XMLSecurityDSig::SHA256,
-            ['http://www.w3.org/2000/09/xmldsig#enveloped-signature']
-        );
-
-        // Create a new (private) Security key
-        $objKey = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, ['type'=>'private']);
-
-        // If key has a passphrase, set it using
-        if (!empty($this->getPassphrase())) {
-            $objKey->passphrase = $this->getPassphrase();
-        }
-
-        // Load the private key
-        $objKey->loadKey($cert['pkey']);
-
-        // Sign the XML file
-        $objDSig->sign($objKey);
-
-        // Add the associated public key to the signature
-        $objDSig->add509Cert($cert['cert']);
-
-        // Append the signature to the XML
-        $objDSig->appendSignature($xmlNfse);
-
         $dom->appendChild($xmlNfse);
+
+        $certificate = Certificate::readPfx(file_get_contents($this->getCertificatePath()), $this->getPassphrase());
+
+        $dom->loadXML(Signer::sign(
+            $certificate,
+            $dom->saveXML(),
+            $xmlMainTag,
+            'Signature',
+            OPENSSL_ALGO_SHA256, //algoritmo de encriptação a ser usado,
+            [true,false,null,null], //veja função C14n do PHP,
+            '', //este campo indica em qual node a assinatura deverá ser inclusa
+        ));
+        $dom->encoding = "utf-8";
 
         if (empty($filename)) {
             return $dom->saveXML();
         } else {
+
             $path = pathinfo($filename);
             if (strtolower($path['extension']) !== 'xml') {
                 throw new \InvalidArgumentException('Filename does\'t have .XML extension!');
