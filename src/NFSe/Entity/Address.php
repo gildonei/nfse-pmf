@@ -107,7 +107,7 @@ class Address extends AbstractEntity
         if (strlen($zipcode) > 10) {
             throw new \InvalidArgumentException('Zip code exceeds 10 chars length!');
         }
-        if (is_numeric($zipcode)) {
+        if (!is_numeric($zipcode)) {
             throw new \InvalidArgumentException('Zip code must contain only numbers!');
         }
         $this->zipcode = $zipcode;
