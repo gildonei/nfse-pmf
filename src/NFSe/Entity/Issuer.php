@@ -140,7 +140,7 @@ class Issuer extends AbstractEntity
 
     /**
      * Return Client Secret
-     * @return int
+     * @return string
      */
     public function getClientSecret()
     {

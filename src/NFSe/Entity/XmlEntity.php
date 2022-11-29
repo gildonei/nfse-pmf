@@ -505,7 +505,7 @@ class XmlEntity extends AbstractEntity
             'Signature',
             OPENSSL_ALGO_SHA256, //algoritmo de encriptação a ser usado,
             [true,false,null,null], //veja função C14n do PHP,
-            '', //este campo indica em qual node a assinatura deverá ser inclusa
+            '' //este campo indica em qual node a assinatura deverá ser inclusa
         ));
         $dom->encoding = "utf-8";
 

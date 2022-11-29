@@ -52,9 +52,9 @@ abstract class AbstractRequest
     /**
      * @param string $method    GET, POST, PUT, DELETE
      * @param string $url   API and Endpoint address
-     * @param \JsonSerializable|null $content
+     * @param \JsonSerializable|null|string $content
      * @return mixed
-     * @throws \NFSe\API30\Ecommerce\Request\NFSeRequestException
+     * @throws NFSeRequestException
      * @throws \RuntimeException
      */
     protected function sendRequest($method, $url, $content = null, array $extraHeaders = [])

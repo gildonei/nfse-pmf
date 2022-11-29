@@ -115,7 +115,7 @@ class Invoice extends AbstractEntity
 
     /**
      * flDecl
-     * @var char S/N
+     * @var string S/N
      */
     private $decl;
 
@@ -127,7 +127,7 @@ class Invoice extends AbstractEntity
 
     /**
      * Is opting for SIMPLES NACIONAL
-     * @var char S/N
+     * @var string S/N
      */
     private $simples;
 
@@ -535,7 +535,7 @@ class Invoice extends AbstractEntity
 
     /**
      * Returns invoice identification
-     * @return bool
+     * @return string
      */
     public function getIdentification()
     {
@@ -590,7 +590,7 @@ class Invoice extends AbstractEntity
 
     /**
      * Define invoice simples
-     * @param sring $value  S | N
+     * @param string $value  S | N
      * @throws \InvalidArgumentException
      * @return \NFSe\Entity\Invoice
      */

@@ -72,6 +72,7 @@ class EmissionRequest extends AbstractRequest
 
     /**
      * Send a XML file to registration
+     * * @todo NÃO IMPLEMENTADO
      * @param \NFSe\Entity\XmlEntity $xml
      * @return xml
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1processa-simplificada/post Request XML
@@ -89,6 +90,7 @@ class EmissionRequest extends AbstractRequest
 
     /**
      * Send a XML file to registration
+     * @todo NÃO IMPLEMENTADO
      * @param \NFSe\Entity\XmlEntity $xml
      * @return xml
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1processa-substituta/post Request XML

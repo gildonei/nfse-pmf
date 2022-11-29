@@ -13,7 +13,7 @@ class NFSeRequestException extends \Exception
 {
     /**
      * Entity of NFSeError
-     * @var \NFSeError
+     * @var NFSeError
      */
     private $NFSeError;
 

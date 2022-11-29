@@ -142,7 +142,7 @@ class Phone extends AbstractEntity
 
     /**
      * Return area code with phone number
-     * @return int
+     * @return string
      */
     public function getPhone()
     {
