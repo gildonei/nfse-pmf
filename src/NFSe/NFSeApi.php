@@ -5,6 +5,7 @@ namespace NFSe;
 use DateTime;
 use NFSe\Entity\Issuer;
 use NFSe\Entity\XmlEntity;
+use NFSe\Request\AuthenticationRequest;
 use NFSe\Request\FileRequest;
 use NFSe\Request\EmissionRequest;
 use NFSe\Request\ConsultationRequest;
@@ -20,11 +21,6 @@ class NFSeApi
      * @var \NFSe\Entity\Issuer
      */
     private $issuer;
-
-    /**
-     * @var \NFSe\Entity\Issuer
-     */
-    private $anonymousIssuer;
 
     /**
      * @var \NFSe\Environment
@@ -94,7 +90,7 @@ class NFSeApi
      */
     public function getAnonymousIssuer()
     {
-        return ($this->getEnvironment()->isProduction()) ?
+        $issuer = ($this->getEnvironment()->isProduction()) ?
             (new Issuer())
                 ->setClientId('consulta2-nfpse-client')
                 ->setClientSecret('7077dbc51dec13a289ece2177cc6efa8') :
@@ -102,6 +98,12 @@ class NFSeApi
             (new Issuer())
                 ->setClientId('consulta-nfpse-client')
                 ->setClientSecret('2ca53c015bef55767f7064d1c5159d45');
+
+        $issuer->setAuthentication(new AuthenticationRequest($issuer, $this->getEnvironment(), 'client_credentials'))
+            ->getAuthentication()
+            ->execute();
+
+        return $issuer;
     }
 
     /**

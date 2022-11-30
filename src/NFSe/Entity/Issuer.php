@@ -102,9 +102,7 @@ class Issuer extends AbstractEntity
         if (empty($key)) {
             throw new \InvalidArgumentException('API Client Id is empty!');
         }
-        // if (strlen($key) !== 32) {
-        //     throw new \InvalidArgumentException('Client Id must have 32 chars length!');
-        // }
+
         $this->clientId = $key;
 
         return $this;

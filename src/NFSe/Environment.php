@@ -17,9 +17,10 @@ class Environment
 
     /**
      * Identify if environment is production
+     * @static
      * @var bool
      */
-    private $isProduction;
+    private static $isProduction;
 
     /**
      * Environment constructor.
@@ -34,6 +35,7 @@ class Environment
 
     /**
      * @return \NFSe\Environment
+     * @static
      */
     public static function sandbox()
     {
@@ -46,6 +48,7 @@ class Environment
 
     /**
      * @return \NFSe\Environment
+     * @static
      */
     public static function production()
     {
@@ -73,6 +76,6 @@ class Environment
      */
     public function isProduction()
     {
-        return $this->isProduction;
+        return self::$isProduction;
     }
 }
