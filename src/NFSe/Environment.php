@@ -16,6 +16,12 @@ class Environment
     private $api;
 
     /**
+     * Identify if environment is production
+     * @var bool
+     */
+    private $isProduction;
+
+    /**
      * Environment constructor.
      *
      * @param $api
@@ -33,6 +39,8 @@ class Environment
     {
         $api = 'https://nfps-e-hml.pmf.sc.gov.br/api/v1/';
 
+        self::$isProduction = false;
+
         return new Environment($api);
     }
 
@@ -42,6 +50,8 @@ class Environment
     public static function production()
     {
         $api = 'https://nfps-e.pmf.sc.gov.br/api/v1/';
+
+        self::$isProduction = true;
 
         return new Environment($api);
     }
@@ -54,5 +64,15 @@ class Environment
     public function getApiUrl()
     {
         return $this->api;
+    }
+
+    /**
+     * Returns a boolean indicating if actual environment is prodction or not
+     *
+     * @return bool|null
+     */
+    public function isProduction()
+    {
+        return $this->isProduction;
     }
 }
