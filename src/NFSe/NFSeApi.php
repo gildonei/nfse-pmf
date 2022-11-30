@@ -89,12 +89,12 @@ class NFSeApi
      * Made this way because PMF uses same anonymous user to perform the search and
      * send response
      *
-     * @access protected
+     * @access public
      * @return \NFSe\Entity\Issuer
      */
-    protected function getAnonymousIssuer()
+    public function getAnonymousIssuer()
     {
-        return ($this->getEnvironment()->production()) ?
+        return ($this->getEnvironment()->isProduction()) ?
             (new Issuer())
                 ->setClientId('consulta2-nfpse-client')
                 ->setClientSecret('7077dbc51dec13a289ece2177cc6efa8') :
