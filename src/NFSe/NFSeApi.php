@@ -5,8 +5,9 @@ namespace NFSe;
 use DateTime;
 use NFSe\Entity\Issuer;
 use NFSe\Entity\XmlEntity;
-use NFSe\Request\ConsultationRequest;
+use NFSe\Request\FileRequest;
 use NFSe\Request\EmissionRequest;
+use NFSe\Request\ConsultationRequest;
 
 /**
  * The NFSe API for creation and consult of bank slip.
@@ -19,6 +20,11 @@ class NFSeApi
      * @var \NFSe\Entity\Issuer
      */
     private $issuer;
+
+    /**
+     * @var \NFSe\Entity\Issuer
+     */
+    private $anonymousIssuer;
 
     /**
      * @var \NFSe\Environment
@@ -36,6 +42,11 @@ class NFSeApi
     private $emission;
 
     /**
+     * @var FileRequest;
+     */
+    private $file;
+
+    /**
      * Create an instance of NFSeApi choosing the environment where the
      * requests will be send
      *      ::production
@@ -50,6 +61,7 @@ class NFSeApi
         $this->setEnvironment((empty($environment)) ? Environment::production() : $environment);
         $this->setConsultation(new ConsultationRequest($this->getIssuer(), $this->getEnvironment()));
         $this->setEmission(new EmissionRequest($this->getIssuer(), $this->getEnvironment()));
+        $this->setFile(new FileRequest($this->getAnonymousIssuer(), $this->getEnvironment()));
     }
 
     /**
@@ -71,6 +83,25 @@ class NFSeApi
     protected function getIssuer()
     {
         return $this->issuer;
+    }
+
+    /**
+     * Made this way because PMF uses same anonymous user to perform the search and
+     * send response
+     *
+     * @access protected
+     * @return \NFSe\Entity\Issuer
+     */
+    protected function getAnonymousIssuer()
+    {
+        return ($this->getEnvironment()->production()) ?
+            (new Issuer())
+                ->setClientId('consulta2-nfpse-client')
+                ->setClientSecret('7077dbc51dec13a289ece2177cc6efa8') :
+
+            (new Issuer())
+                ->setClientId('consulta-nfpse-client')
+                ->setClientSecret('2ca53c015bef55767f7064d1c5159d45');
     }
 
     /**
@@ -137,10 +168,31 @@ class NFSeApi
     }
 
     /**
+     * @access protected
+     * @param \NFSe\Request\FileRequest $file
+     * @return NFSeApi
+     */
+    protected function setFile(FileRequest $file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @access protected
+     * @return \NFSe\Request\FileRequest
+     */
+    protected function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
      * Returns an array with all emitted invoices in a date range
      *
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
+     * @param DateTime $startDate
+     * @param DateTime $endDate
      * @return array
      * [
      *      "notas": [
@@ -154,7 +206,7 @@ class NFSeApi
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
-    public function consultInvoiceByDateInterval(\DateTime $startDate, \DateTime $endDate)
+    public function consultInvoiceByDateInterval(DateTime $startDate, DateTime $endDate)
     {
         return $this->getConsultation()->dateInterval($startDate, $endDate);
     }
@@ -201,7 +253,7 @@ class NFSeApi
      * Returns the date of last emitted invoice by provider CMC
      *
      * @param int $cmc
-     * @return \DateTime
+     * @return DateTime
      * @throws \NFSe\Exception\NFSeRequestException
      * @throws \RuntimeException
      */
@@ -246,7 +298,7 @@ class NFSeApi
      * Register Invoice using regular and full schema
      * @access public
      * @param \NFSe\Entity\XmlEntity
-     * @return bool
+     * @return string Xml file content
      */
     public function registerInvoice(XmlEntity $xml)
     {
@@ -257,10 +309,35 @@ class NFSeApi
      * Validate
      * @access public
      * @param \NFSe\Entity\XmlEntity
-     * @return bool
+     * @return string
      */
     public function validateXml(XmlEntity $xml)
     {
         return $this->getEmission()->validateXml($xml);
+    }
+
+    /**
+     * Return the XML file from NFSe
+     * @access public
+     * @param int $id NFSe Id
+     * @param int $cmc Issuer CMC
+     * @param string $name Xml name
+     * @return string
+     */
+    public function getXml($id, $cmc, $name)
+    {
+        return $this->getFile()->xml($id, $cmc, $name);
+    }
+
+    /**
+     * Return the PDF metadata from NFSe
+     * @access public
+     * @param int $id NFSe Id
+     * @param int $cmc Issuer CMC
+     * @return string
+     */
+    public function getPdf($id, $cmc)
+    {
+        return $this->getFile()->pdf($id, $cmc);
     }
 }

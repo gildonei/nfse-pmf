@@ -1,5 +1,5 @@
 <?php
-require_once(realpath(dirname(__FILE__).'/').'/vendor/autoload.php');
+require_once(realpath(dirname(__FILE__).'/../').'/vendor/autoload.php');
 require_once(realpath(dirname(__FILE__).'/').'/credentials.php'); //File needs to be created at same dir you run authentication file
 
 use NFSe\Entity\Issuer;
@@ -35,14 +35,14 @@ try {
             $xml->getProvider()
             ->setName('Empresa Prestadora do Serviço')
             ->setCnpj('00.000.000/0000-00')
-            ->setCmc(0000000)
+            ->setCmc(654321)
             ->setAedf(000000)
             ->setEmail('test@test.com')
             ->setPhone(
                 $xml->getProvider()->getPhone()
                 ->setCountryCode(55)
-                ->setAreaCode(00)
-                ->setNumber(00000000)
+                ->setAreaCode(48)
+                ->setNumber(33334444)
             )
             ->setAddress(
                 $xml->getProvider()->getAddress()
@@ -62,12 +62,12 @@ try {
             ->setCompanyName('Company Name do Recebedor')
             ->setEmail('test@test.com.br')
             ->setDocument('00.000.000/0000-00')
-            ->setCmc(000000)
+            ->setCmc(123456)
             ->setPhone(
                 $xml->getProvider()->getPhone()
                 ->setCountryCode(55)
-                ->setAreaCode(00)
-                ->setNumber(00000000)
+                ->setAreaCode(48)
+                ->setNumber(99998888)
             )
             ->setAddress(
                 $xml->getProvider()->getAddress()

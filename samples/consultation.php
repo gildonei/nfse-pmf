@@ -1,5 +1,5 @@
 <?php
-require_once(realpath(dirname(__FILE__).'/').'/vendor/autoload.php');
+require_once(realpath(dirname(__FILE__).'/../').'/vendor/autoload.php');
 require_once(realpath(dirname(__FILE__).'/').'/credentials.php'); //File needs to be created at same dir you run authentication file
 
 use NFSe\Entity\Issuer;

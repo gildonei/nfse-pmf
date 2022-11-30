@@ -20,15 +20,22 @@ class AuthenticationRequest extends AbstractRequest
     private $accessToken;
 
     /**
+     * @var string
+     */
+    private $grantType;
+
+    /**
      * Constructor.
      *
      * @param \NFSe\Entity\Issuer $issuer
      * @param \NFSe\Environment $environment
+     * @param string $grantType
      */
-    public function __construct(Issuer $issuer, Environment $environment)
+    public function __construct(Issuer $issuer, Environment $environment, $grantType = 'password')
     {
         parent::__construct($issuer, $environment);
         $this->setEndpoint('autenticacao/oauth/token');
+        $this->setGrantType($grantType);
     }
 
     /**
@@ -50,7 +57,7 @@ class AuthenticationRequest extends AbstractRequest
 
         if (empty($param)) {
             $param = [
-                'grant_type' => 'password',
+                'grant_type' => $this->getGrantType(),
                 'username' => $this->getIssuer()->getUsername(),
                 'password' => $this->getIssuer()->getPassword(),
                 'client_id' => $this->getIssuer()->getClientId(),
@@ -82,7 +89,7 @@ class AuthenticationRequest extends AbstractRequest
      * Define Access Token
      * @param string $token
      * @throws \InvalidArgumentException
-     * @return Issuer
+     * @return AuthenticationRequest
      */
     public function setAccessToken($token)
     {
@@ -102,6 +109,31 @@ class AuthenticationRequest extends AbstractRequest
     public function getAccessToken()
     {
         return $this->accessToken;
+    }
+
+    /**
+     * Define grant type
+     * @param string $grantType
+     * @throws \InvalidArgumentException
+     * @return AuthenticationRequest
+     */
+    public function setGrantType($grantType)
+    {
+        if (empty($grantType)) {
+            throw new \InvalidArgumentException('Access Token is empty!');
+        }
+        $this->grantType = $grantType;
+
+        return $this;
+    }
+
+    /**
+     * Return grant type
+     * @return string
+     */
+    public function getGrantTYpe()
+    {
+        return $this->grantType;
     }
 
     /**

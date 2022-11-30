@@ -59,7 +59,7 @@ class EmissionRequest extends AbstractRequest
     /**
      * Send a XML file to registration
      * @param \NFSe\Entity\XmlEntity $xml
-     * @return xml
+     * @return string Xml file content
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1processa/post Request XML
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/exemploRetornoProcessamento.xml Response XML
      */
@@ -74,36 +74,32 @@ class EmissionRequest extends AbstractRequest
      * Send a XML file to registration
      * * @todo NÃO IMPLEMENTADO
      * @param \NFSe\Entity\XmlEntity $xml
-     * @return xml
+     * @return string Xml file content
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1processa-simplificada/post Request XML
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/exemploRetornoProcessamentoSimplificada.xml Response XML
      */
     public function simplified(XmlEntity $xml)
     {
-        return false;
-
         // @TODO - Finish implementation
-        $this->setEndpoint("processamento/notas/processa-simplificada");
+        // $this->setEndpoint("processamento/notas/processa-simplificada");
 
-        return $this->execute($xml->generateXml());
+        return '';//$this->execute($xml->generateXml());
     }
 
     /**
      * Send a XML file to registration
      * @todo NÃO IMPLEMENTADO
      * @param \NFSe\Entity\XmlEntity $xml
-     * @return xml
+     * @return string Xml file content
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/#tag/Processamento/paths/~1processamento~1notas~1processa-substituta/post Request XML
      * @see https://nfps-e-hml.pmf.sc.gov.br/api/v1/doc/exemploRetornoProcessamentoSubstituta.xml Response XML
      */
     public function replacement(XmlEntity $xml)
     {
-        return false;
-
         // @TODO - Finish implementation
-        $this->setEndpoint("processamento/notas/processa-substituta");
+        // $this->setEndpoint("processamento/notas/processa-substituta");
 
-        return $this->execute($xml->generateXml());
+        return '';//$this->execute($xml->generateXml());
     }
 
     /**

@@ -43,8 +43,6 @@ class Phone extends AbstractEntity
         if (!empty($countryCode)) $this->setCountryCode($countryCode);
         if (!empty($areaCode)) $this->setAreaCode($areaCode);
         if (!empty($number)) $this->setNumber($number);
-
-        return $this;
     }
 
     /**
