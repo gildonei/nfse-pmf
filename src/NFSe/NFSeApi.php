@@ -73,10 +73,10 @@ class NFSeApi
     }
 
     /**
-     * @access protected
+     * @access public
      * @return \NFSe\Entity\Issuer
      */
-    protected function getIssuer()
+    public function getIssuer()
     {
         return $this->issuer;
     }
@@ -119,10 +119,10 @@ class NFSeApi
     }
 
     /**
-     * @access protected
+     * @access public
      * @return \NFSe\Environment
      */
-    protected function getEnvironment()
+    public function getEnvironment()
     {
         return $this->environment;
     }
@@ -140,10 +140,10 @@ class NFSeApi
     }
 
     /**
-     * @access protected
+     * @access public
      * @return \NFSe\Request\ConsultationRequest
      */
-    protected function getConsultation()
+    public function getConsultation()
     {
         return $this->consultation;
     }
@@ -161,10 +161,10 @@ class NFSeApi
     }
 
     /**
-     * @access protected
+     * @access public
      * @return \NFSe\Request\EmissionRequest
      */
-    protected function getEmission()
+    public function getEmission()
     {
         return $this->emission;
     }
@@ -182,10 +182,10 @@ class NFSeApi
     }
 
     /**
-     * @access protected
+     * @access public
      * @return \NFSe\Request\FileRequest
      */
-    protected function getFile()
+    public function getFile()
     {
         return $this->file;
     }
