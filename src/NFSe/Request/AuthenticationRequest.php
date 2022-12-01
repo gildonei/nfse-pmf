@@ -2,6 +2,8 @@
 
 namespace NFSe\Request;
 
+use DateInterval;
+use DateTime;
 use NFSe\Request\AbstractRequest;
 use NFSe\Entity\Issuer;
 use NFSe\Environment;
@@ -18,6 +20,11 @@ class AuthenticationRequest extends AbstractRequest
      * @var string
      */
     private $accessToken;
+
+    /**
+     * @var DateTime
+     */
+    private $tokenExpiresIn;
 
     /**
      * @var string
@@ -81,6 +88,8 @@ class AuthenticationRequest extends AbstractRequest
     {
         $response = json_decode($json);
         $this->setAccessToken($response->access_token);
+        $this->setTokenExpirationDate($response->expires_in);
+        $this->getIssuer()->setAuthentication($this);
 
         return $this;
     }
@@ -97,7 +106,6 @@ class AuthenticationRequest extends AbstractRequest
             throw new \InvalidArgumentException('Access Token is empty!');
         }
         $this->accessToken = $token;
-        $this->getIssuer()->setAuthentication($this);
 
         return $this;
     }
@@ -109,6 +117,31 @@ class AuthenticationRequest extends AbstractRequest
     public function getAccessToken()
     {
         return $this->accessToken;
+    }
+
+    /**
+     * Define Access Token expiration Date Time with given seconds
+     * @param int $seconds
+     * @throws \InvalidArgumentException
+     * @return AuthenticationRequest
+     */
+    public function setTokenExpirationDate($seconds)
+    {
+        if (empty($seconds)) {
+            throw new \InvalidArgumentException('Expiration seconds is empty!');
+        }
+        $this->tokenExpiresIn = (new DateTime())->add(new DateInterval("T{$seconds}S"));
+
+        return $this;
+    }
+
+    /**
+     * Return Access Token expiration Date Time
+     * @return DateTime
+     */
+    public function getTokenExpirationDate()
+    {
+        return $this->tokenExpiresIn;
     }
 
     /**
@@ -143,5 +176,14 @@ class AuthenticationRequest extends AbstractRequest
     public function isAuthenticated()
     {
         return !empty($this->getAccessToken());
+    }
+
+    /**
+     * Indicate if access token is expired or not
+     * @return bool
+     */
+    public function isAccessTokenExpired()
+    {
+        return (new DateTime() > $this->getTokenExpirationDate());
     }
 }
