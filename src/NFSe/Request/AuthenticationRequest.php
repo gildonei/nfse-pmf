@@ -130,7 +130,7 @@ class AuthenticationRequest extends AbstractRequest
         if (empty($seconds)) {
             throw new \InvalidArgumentException('Expiration seconds is empty!');
         }
-        $this->tokenExpiresIn = (new DateTime())->add(new DateInterval("T{$seconds}S"));
+        $this->tokenExpiresIn = (new DateTime())->add(new DateInterval("PT{$seconds}S"));
 
         return $this;
     }
