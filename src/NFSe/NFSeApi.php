@@ -8,6 +8,7 @@ use NFSe\Entity\XmlEntity;
 use NFSe\Request\AuthenticationRequest;
 use NFSe\Request\FileRequest;
 use NFSe\Request\EmissionRequest;
+use NFSe\Request\CancelationRequest;
 use NFSe\Request\ConsultationRequest;
 
 /**
@@ -38,6 +39,11 @@ class NFSeApi
     private $emission;
 
     /**
+     * @var \NFSe\Request\CancelationRequest;
+     */
+    private $cancelation;
+
+    /**
      * @var FileRequest;
      */
     private $file;
@@ -57,6 +63,7 @@ class NFSeApi
         $this->setEnvironment((empty($environment)) ? Environment::production() : $environment);
         $this->setConsultation(new ConsultationRequest($this->getIssuer(), $this->getEnvironment()));
         $this->setEmission(new EmissionRequest($this->getIssuer(), $this->getEnvironment()));
+        $this->setCancelation(new CancelationRequest($this->getIssuer(), $this->getEnvironment()));
         $this->setFile(new FileRequest($this->getAnonymousIssuer(), $this->getEnvironment()));
     }
 
@@ -167,6 +174,27 @@ class NFSeApi
     public function getEmission()
     {
         return $this->emission;
+    }
+
+    /**
+     * @access protected
+     * @param \NFSe\Request\CancelationRequest $cancelation
+     * @return NFSeApi
+     */
+    protected function setCancelation(CancelationRequest $cancelation)
+    {
+        $this->cancelation = $cancelation;
+
+        return $this;
+    }
+
+    /**
+     * @access public
+     * @return \NFSe\Request\CancelationRequest
+     */
+    public function getCancelation()
+    {
+        return $this->cancelation;
     }
 
     /**
@@ -341,5 +369,16 @@ class NFSeApi
     public function getPdf($id, $cmc)
     {
         return $this->getFile()->pdf($id, $cmc);
+    }
+
+    /**
+     * Cancel the invoice
+     * @access public
+     * @param \NFSe\Entity\XmlEntity $xml Signed cancelation XML string
+     * @return string
+     */
+    public function cancelInvoice(XmlEntity $xml)
+    {
+        return $this->getCancelation()->cancel($xml);
     }
 }

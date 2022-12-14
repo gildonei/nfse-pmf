@@ -3,11 +3,9 @@
 namespace NFSe\Entity;
 
 use NFSe\Entity\AbstractEntity;
-use NFSe\Entity\Provider;
-use NFSe\Entity\Taker;
-use NFSe\Entity\Service;
-use NFePHP\Common\Certificate;
+use NFSe\Entity\Cancelation;
 use NFePHP\Common\Signer;
+use NFePHP\Common\Certificate;
 
 
 /**
@@ -76,6 +74,12 @@ class XmlEntity extends AbstractEntity
      * @var string
      */
     private $identification;
+
+    /**
+     * NFSe cancelation
+     * @var \NFSe\Entity\Cancelation
+     */
+    private $cancelation;
 
     /**
      * Array containing ceritifica files obtained with openssl_pkcs12_read
@@ -360,6 +364,29 @@ class XmlEntity extends AbstractEntity
     }
 
     /**
+     * Set cancelation
+     * @access public
+     * @param \NFSe\Entity\Cancelation NFSe cancelation
+     * @return \NFSe\Entity\XmlEntity
+     */
+    public function setCancelation(Cancelation $cancelation)
+    {
+        $this->cancelation = $cancelation;
+
+        return $this;
+    }
+
+    /**
+     * Return cancelation
+     * @access public
+     * @return \NFSe\Entity\Cancelation
+     */
+    public function getCancelation()
+    {
+        return (empty($this->cancelation)) ? new Cancelation() : $this->cancelation;
+    }
+
+    /**
      * Define PFX certificate path and parses it into an array
      * @param string $path
      * @throws \InvalidArgumentException
@@ -493,6 +520,69 @@ class XmlEntity extends AbstractEntity
         $xmlNfse->appendChild($dom->createElement('valorISSQNSubstituicao', $this->getIssqnReplacement()));
         $xmlNfse->appendChild($dom->createElement('valorTotalServicos', $this->getTotalValue()));
         $xmlNfse->appendChild($dom->createElement('cfps', $this->getCfps()));
+
+        $dom->appendChild($xmlNfse);
+
+        $certificate = Certificate::readPfx(file_get_contents($this->getCertificatePath()), $this->getPassphrase());
+
+        $dom->loadXML(Signer::sign(
+            $certificate,
+            $dom->saveXML(),
+            $xmlMainTag,
+            'Signature',
+            OPENSSL_ALGO_SHA256, //algoritmo de encriptação a ser usado,
+            [true,false,null,null], //veja função C14n do PHP,
+            '' //este campo indica em qual node a assinatura deverá ser inclusa
+        ));
+        $dom->encoding = "utf-8";
+
+        if (empty($filename)) {
+            return $dom->saveXML();
+        } else {
+
+            $path = pathinfo($filename);
+            if (strtolower($path['extension']) !== 'xml') {
+                throw new \InvalidArgumentException('Filename does\'t have .XML extension!');
+            }
+            if (!file_exists($path['dirname'])) {
+                throw new \InvalidArgumentException('Save path does not exists!');
+            }
+            if (!is_writable($path['dirname'])) {
+                throw new \InvalidArgumentException('Save path is not writeable!');
+            }
+            $dom->save($filename);
+
+            return true;
+        }
+    }
+
+     /**
+     * Generate and Sign XML of invoice to be canceled
+     * @access public
+     * @param string $filename  filename.xml, including absolut path where file should be saved
+     * @param string $pfx  pfx certificate file
+     * @param string $passphrase  private key passphrase if has a key
+     * @throws \InvalidArgumentException
+     * @return string|void   Returns xml file if savePath is not set
+     */
+    public function generateCancelationXml()
+    {
+        if (empty($this->getCertificatePath())) {
+            throw new \InvalidArgumentException('PFX certificate path is empty!');
+        }
+
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true;
+
+        // Create main nodes
+        $xmlMainTag = 'xmlCancelamentoNfpse';
+        $xmlNfse = $dom->createElement($xmlMainTag);
+
+        // Append all extra nodes
+        $xmlNfse->appendChild($dom->createElement('motivoCancelamento', $this->getCancelation()->getReason()));
+        $xmlNfse->appendChild($dom->createElement('nuAedf', $this->getCancelation()->getAedf()));
+        $xmlNfse->appendChild($dom->createElement('nuNotaFiscal', $this->getCancelation()->getInvoiceNumber()));
+        $xmlNfse->appendChild($dom->createElement('codigoVerificacao', $this->getCancelation()->getVerificationCode()));
 
         $dom->appendChild($xmlNfse);
 
