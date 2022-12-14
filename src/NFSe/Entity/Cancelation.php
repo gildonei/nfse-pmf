@@ -15,25 +15,25 @@ class Cancelation extends AbstractEntity
      * Cancelation reason
      * @var string
      */
-    private $reason = 55;
+    private $reason = '';
 
     /**
      * AEDF number
      * @var string
      */
-    private $aedf;
+    private $aedf = '';
 
     /**
      * Invoice number
      * @var int
      */
-    private $invoiceNumber;
+    private $invoiceNumber = '';
 
     /**
      * Verification code
      * @var string
      */
-    private $verificationCode;
+    private $verificationCode = '';
 
     /**
      * Constructor

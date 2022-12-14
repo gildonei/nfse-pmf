@@ -5,3 +5,4 @@ nbproject
 .history
 /files.php
 samples/credentials.php
+samples/certificado.pfx

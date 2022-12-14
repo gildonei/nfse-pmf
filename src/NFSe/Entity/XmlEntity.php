@@ -458,7 +458,7 @@ class XmlEntity extends AbstractEntity
      * @param string $pfx  pfx certificate file
      * @param string $passphrase  private key passphrase if has a key
      * @throws \InvalidArgumentException
-     * @return string|void   Returns xml file if savePath is not set
+     * @return bool|string   Returns xml file if savePath is not set
      */
     public function generateXml($filename = null)
     {
@@ -563,7 +563,7 @@ class XmlEntity extends AbstractEntity
      * @param string $pfx  pfx certificate file
      * @param string $passphrase  private key passphrase if has a key
      * @throws \InvalidArgumentException
-     * @return string|void   Returns xml file if savePath is not set
+     * @return bool|string   Returns xml file if savePath is not set
      */
     public function generateCancelationXml()
     {
