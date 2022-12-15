@@ -20,7 +20,7 @@ use NFSe\NFSeApi;
     </head>
 <body>
     <div class="container">
-        <div class="card" class="mt-5">
+        <div class="card mt-5">
             <div class="card-header">
                 <h4>Cancelamento de NFPS-e</h4>
             </div>
@@ -39,7 +39,7 @@ use NFSe\NFSeApi;
                     $authentication->execute();
 
                     $reason = 'Teste de cancelamento';
-                    $nfseId = '544598';
+                    $nfseId = '6';
                     $aedf = '535413';
                     $verificationCode = 'A48491E33A866A53';
 

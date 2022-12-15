@@ -20,7 +20,7 @@ use NFSe\NFSeApi;
     </head>
 <body>
     <div class="container">
-        <div class="card" class="mt-5">
+        <div class="card mt-5">
             <div class="card-header">
                 <h4>Emissão de NFPS-e</h4>
             </div>

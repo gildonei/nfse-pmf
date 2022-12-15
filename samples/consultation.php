@@ -19,7 +19,7 @@ use NFSe\NFSeApi;
     </head>
 <body>
     <div class="container">
-        <div class="card" class="mt-5">
+        <div class="card mt-5">
             <div class="card-header">
                 <h4>Cancelamento de NFPS-e</h4>
             </div>
