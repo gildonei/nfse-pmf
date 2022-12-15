@@ -572,7 +572,8 @@ class XmlEntity extends AbstractEntity
         }
 
         $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
+        $dom->formatOutput = false;
+        $dom->preserveWhiteSpace = false;
 
         // Create main nodes
         $xmlMainTag = 'xmlCancelamentoNfpse';
@@ -597,7 +598,7 @@ class XmlEntity extends AbstractEntity
             [true,false,null,null], //veja função C14n do PHP,
             '' //este campo indica em qual node a assinatura deverá ser inclusa
         ));
-        $dom->encoding = "utf-8";
+        $dom->encoding = "UTF-8";
 
         if (empty($filename)) {
             return $dom->saveXML();
