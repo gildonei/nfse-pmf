@@ -452,6 +452,20 @@ class XmlEntity extends AbstractEntity
     }
 
     /**
+     * Instantiates and return the DOMDocument to standardize the generation of XML document
+     * @throws \InvalidArgumentException
+     * @return \DOMDocument
+     */
+    private function getDomXml()
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = false;
+        $dom->preserveWhiteSpace = false;
+
+        return $dom;
+    }
+
+    /**
      * Generate and Sign XML of invoice to be sent
      * @access public
      * @param string $filename  filename.xml, including absolut path where file should be saved
@@ -462,12 +476,11 @@ class XmlEntity extends AbstractEntity
      */
     public function generateXml($filename = null)
     {
+        $dom = $this->getDomXml();
+
         if (empty($this->getCertificatePath())) {
             throw new \InvalidArgumentException('PFX certificate path is empty!');
         }
-
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
 
         // Create main nodes
         $xmlMainTag = 'xmlProcessamentoNfpse';
@@ -567,13 +580,11 @@ class XmlEntity extends AbstractEntity
      */
     public function generateCancelationXml()
     {
+        $dom = $this->getDomXml();
+
         if (empty($this->getCertificatePath())) {
             throw new \InvalidArgumentException('PFX certificate path is empty!');
         }
-
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = false;
-        $dom->preserveWhiteSpace = false;
 
         // Create main nodes
         $xmlMainTag = 'xmlCancelamentoNfpse';
