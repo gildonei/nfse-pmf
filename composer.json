@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "nfephp-org/sped-common": "5.*"
     },
     "autoload": {
         "psr-0": {
