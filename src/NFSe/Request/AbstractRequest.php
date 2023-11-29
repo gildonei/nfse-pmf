@@ -123,11 +123,7 @@ abstract class AbstractRequest
                 $exception = null;
                 $response  = json_decode($responseBody);
 
-                if (isset($response->body)) {
-                    foreach ($response->body as $error) {
-                        $exception = new NFSeRequestException($error->message, $statusCode, $exception);
-                    }
-                } else {
+                if ($response === false) {
                     $xmlResponse = simplexml_load_string($responseBody);
                     if ($xmlResponse === false) {
                         $message = (isset($response->message)) ? $response->message : $response->error_description;
@@ -137,6 +133,17 @@ abstract class AbstractRequest
                     }
                     $exception = new NFSeRequestException($message, $statusCode, null);
                 }
+
+                if (isset($response->error)) {
+                    $exception = new NFSeRequestException($response->error_description, $statusCode, $exception);
+                }
+
+                if (isset($response->body)) {
+                    foreach ($response->body as $error) {
+                        $exception = new NFSeRequestException($error->message, $statusCode, $exception);
+                    }
+                }
+
                 throw $exception;
 
             case 401:
